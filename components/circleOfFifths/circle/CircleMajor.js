@@ -1,5 +1,6 @@
 import { useState, useRef, useContext, useEffect } from 'react';
 // import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import ColorWheel from './ColorWheel';
 import KeySigLabels from './KeySigLabels';
 import RomanRingRotation from './RomanRingRotation';
@@ -9,6 +10,7 @@ import { ANIMATION_TIME, detectEnharmonic } from './circleConstants';
 
 export default function CircleMajor() {
   // let history = useHistory();
+  const router = useRouter();
 
   // Responsive framer-motion size scale
   const [colorWheelParams, setColorWheelParams] = useState({
@@ -114,6 +116,7 @@ export default function CircleMajor() {
     setScale({ root: newKeySig.keySig, type: 'major' });
     // Push route to browser url
     // history.push(formatScaleURL(newKeySig));
+    router.push(formatScaleURL(newKeySig));
   };
 
   // Set initial wheel rotation on first run.  This allows for each scale to trigger from it's own URL from google search/bookmarks (ex. /e-major-scale)

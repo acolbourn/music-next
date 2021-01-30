@@ -1,8 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Circle from '../components/circleOfFifths/circle/Circle';
 import { ScaleContextProvider } from '../components/circleOfFifths/contexts/scaleContext';
-// import Scale from './Scale';
-// import ChordRow from './ChordRow';
+import Scale from '../components/circleOfFifths/Scale';
+import ChordRow from '../components/circleOfFifths/ChordRow';
 
 const useStyles = makeStyles({
   root: {
@@ -46,12 +46,12 @@ export default function circleOfFifths() {
         <div className={classes.circleArea}>
           <Circle />
         </div>
-        {/* <div className={classes.scaleArea}>
+        <div className={classes.scaleArea}>
           <Scale />
         </div>
         <div className={classes.chordGridArea}>
           <ChordRow />
-        </div> */}
+        </div>
       </div>
     </ScaleContextProvider>
   );
