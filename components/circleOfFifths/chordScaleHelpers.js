@@ -1,3 +1,5 @@
+import { KEY_SIGS } from './circle/circleConstants';
+
 // Array of all 12 possible chromatic notes.  Without exceeding double sharps and flats, each letter name has 5 possibilities and each appears exactly one time in the array below.  For example (A, A#, A##, Ab, Abb).  This creates 7 x 5 = 35 unique notes names (7 letters x 5 possibilities), hence the 35 values below.  The final array with 2 values is not an error.
 const NOTE_DICTIONARY = [
   ['Bbb', 'A', 'G##'],
@@ -105,7 +107,7 @@ const getChordsOfScale = (scale) => {
     if (note2Index > 6) note2Index -= 7;
     if (note3Index > 6) note3Index -= 7;
     notes = [scaleBase[i], scaleBase[note2Index], scaleBase[note3Index]];
-    chords.push(getChordfromNotes(notes));
+    chords.push(getChordFromNotes(notes));
   }
   return chords;
 };
@@ -116,7 +118,7 @@ const getChordsOfScale = (scale) => {
  * @param {array} notes Array of notes as string.
  * @returns {object} An object with chord details.
  */
-const getChordfromNotes = (notes) => {
+const getChordFromNotes = (notes) => {
   // Find index of each note in chromatic scale dictionary
   let noteIndices = [];
   notes.forEach((note) => {
@@ -150,13 +152,13 @@ const getChordfromNotes = (notes) => {
 };
 
 /**
- * Take in a key signature and return properly formatted URL string for react-router-dom.
- * @param {object} keySignature Key signature to format.
+ * Take in a key signature and return properly formatted URL string.
+ * @param {string} keySignature Key signature to format.
+ * @param {string} scaleType Scale type (major, minor)
  * @returns {string} Formatted URL string.
  */
-const formatScaleURL = (keySignature) => {
-  const keySig = keySignature.keySig;
-  let URLString = `/circle-of-fifths/${keySig[0].toLowerCase()}`;
+const formatScaleURL = (keySig, scaleType) => {
+  let URLString = `${keySig[0].toLowerCase()}`;
   let flatOrSharp = '-';
   if (keySig.length > 1) {
     if (keySig[1] === 'b') {
@@ -166,9 +168,30 @@ const formatScaleURL = (keySignature) => {
     }
   }
   URLString = URLString.concat(flatOrSharp);
-  // URLString = URLString.concat(`${keySignature.type}-scale`);
-  URLString = URLString.concat(`major-scale`);
+  URLString = URLString.concat(`${scaleType}-scale`);
   return URLString;
 };
 
-export { getScale, getChordsOfScale, getChordfromNotes, formatScaleURL };
+/**
+ * Generate URL paths for each key.
+ * @returns {array} Array of URL strings.
+ */
+const getScaleURLS = () => {
+  let URLRoutes = [];
+  KEY_SIGS.forEach((row) => {
+    // Each key signature row contains a major and a minor key.  It also may contain an enharmonic major/minor.  Format URLs for all keys that exist.
+    URLRoutes.push(formatScaleURL(row.major, 'major'));
+    URLRoutes.push(formatScaleURL(row.minor, 'minor'));
+    if (row.enharmMaj) URLRoutes.push(formatScaleURL(row.enharmMaj, 'major'));
+    if (row.enharmMin) URLRoutes.push(formatScaleURL(row.enharmMin, 'minor'));
+  });
+  return URLRoutes;
+};
+
+export {
+  getScale,
+  getChordsOfScale,
+  getChordFromNotes,
+  formatScaleURL,
+  getScaleURLS,
+};

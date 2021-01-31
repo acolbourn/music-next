@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import ColorWheel from './ColorWheel';
 import KeySigLabels from './KeySigLabels';
 import RomanRingRotation from './RomanRingRotation';
-import { formatScaleURL } from '../chordScaleHelpers';
+// import { formatScaleURL } from '../chordScaleHelpers';
 import { ScaleContext } from '../contexts/scaleContext';
 import { ANIMATION_TIME, detectEnharmonic } from './circleConstants';
 
@@ -116,7 +116,7 @@ export default function CircleMajor() {
     setScale({ root: newKeySig.keySig, type: 'major' });
     // Push route to browser url
     // history.push(formatScaleURL(newKeySig));
-    router.push(formatScaleURL(newKeySig));
+    // router.push(formatScaleURL(newKeySig));
   };
 
   // Set initial wheel rotation on first run.  This allows for each scale to trigger from it's own URL from google search/bookmarks (ex. /e-major-scale)

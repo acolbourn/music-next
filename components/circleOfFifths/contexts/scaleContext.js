@@ -1,27 +1,18 @@
 import { useState, createContext } from 'react';
-// import { useParams } from 'react-router-dom';
-// import { validateRoute } from '../CircleOfFifths/circleConstants';
+import { validateRoute } from '../circle/circleConstants';
 import { useRouter } from 'next/router';
 
 export const ScaleContext = createContext();
 
 export const ScaleContextProvider = (props) => {
-  // Get initial scale from react-router-dom URL
-  //   let { scaleId } = useParams();
-  //   let [initialKeySig] = validateRoute(scaleId);
-
-  //   const [scale, setScale] = useState({
-  //     root: initialKeySig.root,
-  //     type: initialKeySig.type,
-  //   });
-
   // Get initial scale from router
   const router = useRouter();
-  console.log(router.pathname);
+  const URLScale = router.query.scale;
+  let [initialKeySig] = validateRoute(URLScale);
 
   const [scale, setScale] = useState({
-    root: 'C',
-    type: 'major',
+    root: initialKeySig.root,
+    type: initialKeySig.type,
   });
   return (
     <ScaleContext.Provider value={{ scale, setScale }}>

@@ -7,7 +7,6 @@ export default function Home() {
       <Link href='/circle-of-fifths'>Circle of Fifths</Link>
       <Link href='/circle-of-fifths/c-major-scale'>C Major</Link>
       <Link href='/circle-of-fifths/d-major-scale'>D Major</Link>
-      <Link href='/circle-of-fifths/e-flat-minor-scale'>Eb Minor</Link>
     </div>
   );
 }
