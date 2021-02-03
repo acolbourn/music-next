@@ -188,10 +188,12 @@ const getScaleURLS = () => {
   return URLRoutes;
 };
 
+const SCALE_URLS = getScaleURLS();
+
 export {
   getScale,
   getChordsOfScale,
   getChordFromNotes,
   formatScaleURL,
-  getScaleURLS,
+  SCALE_URLS,
 };

@@ -1,4 +1,4 @@
-import { getScaleURLS } from '../../../components/circleOfFifths/chordScaleHelpers';
+import { SCALE_URLS } from '../../../components/circleOfFifths/chordScaleHelpers';
 import CircleOfFifths from '../../../pages/circle-of-fifths';
 
 export default function scale({ scale }) {
@@ -16,10 +16,7 @@ export const getStaticProps = async (context) => {
 };
 
 export const getStaticPaths = async () => {
-  // Generate scale URLs
-  const scales = getScaleURLS();
-
-  const paths = scales.map((scale) => ({ params: { scale: scale } }));
+  const paths = SCALE_URLS.map((scale) => ({ params: { scale: scale } }));
 
   return {
     paths,
