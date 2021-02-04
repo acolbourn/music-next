@@ -1,8 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
+import Navbar from './Navbar';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   app: {
-    backgroundColor: 'grey',
+    backgroundColor: theme.colors.background.primary,
     width: '100%',
     height: '100vh',
     display: 'grid',
@@ -14,7 +15,7 @@ const useStyles = makeStyles({
     `,
   },
   header: {
-    backgroundColor: 'blue',
+    backgroundColor: theme.colors.background.navbar,
     gridArea: 'header',
   },
   bodyAndFooter: {
@@ -35,17 +36,19 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   footer: {
-    backgroundColor: 'green',
+    backgroundColor: theme.colors.background.navbar,
     gridArea: 'footer',
   },
-});
+}));
 
 export default function Layout({ children }) {
   const classes = useStyles();
 
   return (
     <div className={classes.app}>
-      <header className={classes.header}>Header</header>
+      <header className={classes.header}>
+        <Navbar />
+      </header>
       <div className={classes.bodyAndFooter}>
         <main className={classes.body}>{children}</main>
         <footer className={classes.footer}>Footer</footer>

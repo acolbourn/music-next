@@ -3,14 +3,23 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import ScaleList from './ScaleList';
+import Paper from '@material-ui/core/Paper';
+import PageLinks from './PageLinks';
 
 const useStyles = makeStyles({
-  root: {
+  pageCardRoot: {
     minWidth: 275,
   },
-  pos: {
+  cardBody: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  scaleTitle: {
     marginBottom: 12,
+  },
+  scaleBox: {
+    border: '1px solid blue',
+    flex: 1,
   },
 });
 
@@ -18,29 +27,26 @@ export default function HomePage() {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.pageCardRoot}>
       <CardContent>
-        <Typography variant='h1'>
+        <Typography variant='h3' component='h1'>
           <Link href='/circle-of-fifths'>Circle of Fifths</Link>
         </Typography>
-        <Typography className={classes.pos} color='textSecondary'>
-          Major Scales
-        </Typography>
-        {/* <Typography variant='body2' component='p'>
-          well meaning and kindly.
-          <br />
-          {'"a benevolent smile"'}
-        </Typography> */}
-        <ScaleList />
+        <div className={classes.cardBody}>
+          <Paper className={classes.scaleBox}>
+            <Typography className={classes.scaleTitle} color='textSecondary'>
+              Major Scales
+            </Typography>
+            <PageLinks scaleType={'major'} />
+          </Paper>
+          <Paper className={classes.scaleBox}>
+            <Typography className={classes.scaleTitle} color='textSecondary'>
+              Minor Scales
+            </Typography>
+            <PageLinks scaleType={'minor'} />
+          </Paper>
+        </div>
       </CardContent>
     </Card>
   );
-  // return (
-  //   <div>
-  //     <h1>Home</h1>
-  //
-  //     <Link href='/circle-of-fifths/c-major-scale'>C Major</Link>
-  //     <Link href='/circle-of-fifths/d-major-scale'>D Major</Link>
-  //   </div>
-  // );
 }

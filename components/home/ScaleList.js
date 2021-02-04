@@ -1,54 +1,35 @@
-import React from 'react';
+import Link from 'next/link';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import { SCALE_URLS } from '../circleOfFifths/chordScaleHelpers';
+import ListItemLink from './ListItemLink';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  scaleListRoot: {
     flexGrow: 1,
     maxWidth: 752,
   },
-  demo: {
-    backgroundColor: theme.palette.background.paper,
-  },
+  // MuiListItem-dense padding top/bottom changed in theme.js
 }));
 
-export default function InteractiveList() {
+export default function ScaleList({ scales }) {
   const classes = useStyles();
 
-  // Sort all scale URLs alphabetically and divide into major/minor
-  const scalesSorted = SCALE_URLS.sort();
-  const majorScales = scalesSorted.filter((scale) => scale.includes('major'));
-
-  // Takes in a url string, return formatted link label.
-  function formatLabel(url) {
-    // Split URL into parts and capitalize each
-    const words = url.split('-');
-    const label = words
-      .map((word) => {
-        return word[0].toUpperCase() + word.substring(1);
-      })
-      .join(' ');
-    return label;
-  }
-
-  const majorScaleList = majorScales.map((scale) => {
-    const label = formatLabel(scale);
+  const list = scales.map((scale) => {
     return (
-      <ListItem>
-        <ListItemText primary={label} secondary={null} />
-      </ListItem>
+      <Link key={scale.label} href={`/circle-of-fifths/${scale.url}`} passHref>
+        <ListItemLink>
+          <ListItemText primary={scale.label} secondary={null} />
+        </ListItemLink>
+      </Link>
     );
   });
 
   return (
-    <div className={classes.root}>
-      <div className={classes.demo}>
-        <List dense={true}>{majorScaleList}</List>
-      </div>
+    <div className={classes.scaleListRoot}>
+      <List dense={true} disablePadding>
+        {list}
+      </List>
     </div>
   );
 }
