@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'ProximaNova';
+  src: url('ProximaNova-Light.woff2');
+  src: url('ProximaNova-Light.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AvenirNextCyr-Light';
+  src: url('AvenirNextCyr-Light.woff2');
+  src: url('AvenirNextCyr-Light.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AvenirNextCyr-Thin';
+  src: url('AvenirNextCyr-Thin.woff2');
+  src: url('AvenirNextCyr-Thin.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Campania';
+  src: url('Campania.woff');
+  src: url('Campania.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}

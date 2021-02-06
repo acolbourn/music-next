@@ -17,6 +17,16 @@ const theme = createMuiTheme({
       navbar: '#181818',
     },
   },
+  fonts: {
+    primary: 'ProximaNova, AvenirNextCyr-Light, AvenirNextCyr-Thin, sans-serif',
+    secondary: 'AvenirNextCyr-Light, AvenirNextCyr-Thin, sans-serif',
+    music: 'Campania',
+  },
+  typography: {
+    fontFamily: [
+      'ProximaNova, AvenirNextCyr-Light, AvenirNextCyr-Thin, sans-serif',
+    ],
+  },
   overrides: {
     MuiListItem: {
       dense: {
