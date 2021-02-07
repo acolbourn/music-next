@@ -6,6 +6,7 @@ import {
   DIAMETER,
   KEY_SIGS,
   detectEnharmonic,
+  formatLabel,
 } from './circleConstants';
 
 const useStyles = makeStyles({
@@ -55,6 +56,9 @@ export default function KeySigLabels() {
       if (labelReplacement !== null && labelReplacement.root === label) {
         label = labelReplacement.newRoot;
       }
+      // Replace b/# with sharp/flat music symbols.
+      label = formatLabel(label);
+
       return (
         <div
           key={label}

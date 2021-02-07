@@ -1,6 +1,4 @@
 const DIAMETER = 500; // Overall circle diameter
-const MAJOR_ROMAN_NUMS = ['vii°', 'iii', 'vi', 'ii', 'V', 'I', 'IV'];
-const MINOR_ROMAN_NUMS = ['ii°', 'v', 'i', 'iv', 'VII', 'III', 'VI'];
 
 const KEY_SIGS = [
   { major: 'A', minor: 'f#', enharmMaj: null, enharmMin: null },
@@ -78,6 +76,33 @@ const Z_INDEXES = {
   romanRing: 5,
   colorWheel: 10,
 };
+
+const SYMBOLS = {
+  flat: '♭',
+  sharp: '♯',
+  diminished: '°',
+  augmented: '+',
+  halfDiminished: 'ø',
+  major1: 'Ⅰ',
+  major2: 'Ⅱ',
+  major3: 'Ⅲ',
+  major4: 'Ⅳ',
+  major5: 'Ⅴ',
+  major6: 'Ⅵ',
+  major7: 'Ⅶ',
+  minor1: 'ⅰ',
+  minor2: 'ⅱ',
+  minor3: 'ⅲ',
+  minor4: 'ⅳ',
+  minor5: 'ⅴ',
+  minor6: 'ⅵ',
+  minor7: 'ⅶ',
+};
+
+const MAJOR_ROMAN_NUMS = ['ⅶ°', 'ⅲ', 'ⅵ', 'ⅱ', 'Ⅴ', 'Ⅰ', 'Ⅳ'];
+const MINOR_ROMAN_NUMS = ['ⅱ°', 'ⅴ', 'ⅰ', 'ⅳ', 'Ⅶ', 'Ⅲ', 'Ⅵ'];
+// const MAJOR_ROMAN_NUMS = ['vii°', 'iii', 'vi', 'ii', 'V', 'I', 'IV'];
+// const MINOR_ROMAN_NUMS = ['ii°', 'v', 'i', 'iv', 'VII', 'III', 'VI'];
 
 // Key signature to rotation dictionary
 const ROMAN_RING_POSITIONS = [
@@ -195,10 +220,28 @@ const detectEnharmonic = (keySig) => {
   };
 };
 
+/**
+ * Replace b/# with flat/sharp symbols.
+ * @param {string} label Label to format. (ex. A#, A, Bb)
+ * @returns {string} Label with flat/sharp symbols.
+ */
+const formatLabel = (label) => {
+  let newLabel = label;
+  // If flat or sharp, replace with symbol
+  if (newLabel.length > 1) {
+    if (newLabel[1] === 'b')
+      newLabel = newLabel[0] + SYMBOLS.flat + newLabel.slice(2);
+    if (newLabel[1] === '#')
+      newLabel = newLabel[0] + SYMBOLS.sharp + newLabel.slice(2);
+  }
+  return newLabel;
+};
+
 export {
   getCoords,
   validateRoute,
   detectEnharmonic,
+  formatLabel,
   DIAMETER,
   MAJOR_ROMAN_NUMS,
   MINOR_ROMAN_NUMS,
@@ -210,4 +253,5 @@ export {
   Z_INDEXES,
   ROMAN_RING_POSITIONS,
   ANIMATION_TIME,
+  SYMBOLS,
 };
