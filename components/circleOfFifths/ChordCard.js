@@ -1,5 +1,5 @@
-import { formatLabel } from './circle/circleConstants';
+import { replaceFlatsSharps } from './circle/circleConstants';
 
 export default function ChordCard({ chord }) {
-  return <div>{formatLabel(chord)}</div>;
+  return <div>{replaceFlatsSharps(chord)}</div>;
 }

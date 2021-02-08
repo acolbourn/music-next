@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ANIMATION_TIME } from './circle/circleConstants';
 import ChordCard from './ChordCard';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   flipCardRoot: {
     position: 'relative',
     width: '50px',
@@ -15,12 +15,7 @@ const useStyles = makeStyles({
     borderRadius: 10,
     position: 'absolute',
     WebkitBackfaceVisibility: 'hidden',
-  },
-  front: {
-    background: 'red',
-  },
-  back: {
-    background: 'blue',
+    backgroundColor: theme.colors.background.primary,
   },
   cardContent: {
     width: '100%',
@@ -29,7 +24,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+}));
 
 export default function FlipCard({ chord }) {
   console.log('FlipCard Rendered');
@@ -81,7 +76,7 @@ export default function FlipCard({ chord }) {
   return (
     <motion.div className={classes.flipCardRoot}>
       <motion.div
-        className={`${classes.cardFace} ${classes.front}`}
+        className={classes.cardFace}
         initial={{ rotateY: 0 }}
         animate={{ rotateY: flip ? -180 : 0 }}
         transition={{ duration: ANIMATION_TIME }}
@@ -89,7 +84,7 @@ export default function FlipCard({ chord }) {
         {side1}
       </motion.div>
       <motion.div
-        className={`${classes.cardFace} ${classes.back}`}
+        className={classes.cardFace}
         initial={{ rotateY: 180 }}
         animate={{ rotateY: flip ? 0 : 180 }}
         transition={{ duration: ANIMATION_TIME }}

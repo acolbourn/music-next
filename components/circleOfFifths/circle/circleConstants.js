@@ -221,14 +221,74 @@ const detectEnharmonic = (keySig) => {
 };
 
 /**
+ * Take in a key signature and return array of related key signatures.
+ * @param {object} keySig Primary key signature.
+ * @returns {array} Array of related key signatures. Ex. {keySig: {root: 'a' type: 'naturalMinor'}, relationship: 'Parallel Minor'}
+ */
+function getRelatedKeys(keySig) {
+  // Detect if enharmonic key selected
+  const { enharmonicDetected } = detectEnharmonic(keySig);
+  let keyType = keySig.type;
+  if (enharmonicDetected && keyType === 'major') keyType = 'enharmMaj';
+  if (enharmonicDetected && keyType === 'minor') keyType = 'enharmMin';
+
+  // Lookup primary and relative keys
+  const keyRow = KEY_SIGS.find((key) => key[keyType] === keySig.root);
+
+  const major = enharmonicDetected ? keyRow.enharmMaj : keyRow.major;
+  let minor = enharmonicDetected ? keyRow.enharmMin : keyRow.minor;
+  minor = minor[0].toUpperCase() + minor.slice(1);
+
+  // Make array of related scales to display
+  let relatedKeys = [{ keySig: keySig, relationship: 'Primary' }];
+  if (keySig.type === 'major') {
+    // Parallel minor
+    relatedKeys.push({
+      keySig: { root: major, type: 'naturalMinor' },
+      relationship: 'Parallel Minor',
+    });
+    // Relative minor
+    relatedKeys.push({
+      keySig: { root: minor, type: 'naturalMinor' },
+      relationship: 'Relative Minor',
+    });
+  } else if (keySig.type === 'minor') {
+    // Harmonic minor
+    relatedKeys.push({
+      keySig: { root: minor, type: 'harmonicMinor' },
+      relationship: 'Harmonic Minor',
+    });
+    // Melodic minor
+    relatedKeys.push({
+      keySig: { root: minor, type: 'melodicMinor' },
+      relationship: 'Melodic Minor',
+    });
+    // Parallel major
+    relatedKeys.push({
+      keySig: { root: minor, type: 'major' },
+      relationship: 'Parallel Major',
+    });
+  }
+
+  return relatedKeys;
+}
+
+/**
  * Replace b/# with flat/sharp symbols.
  * @param {string} label Label to format. (ex. A#, A, Bb)
  * @returns {string} Label with flat/sharp symbols.
  */
-const formatLabel = (label) => {
+const replaceFlatsSharps = (label) => {
   let newLabel = label;
   // If flat or sharp, replace with symbol
-  if (newLabel.length > 1) {
+  if (newLabel.length > 2) {
+    // Handle double flats/sharps
+    if (newLabel[2] === 'b')
+      newLabel = newLabel[0] + SYMBOLS.flat + SYMBOLS.flat + newLabel.slice(3);
+    if (newLabel[2] === '#')
+      newLabel =
+        newLabel[0] + SYMBOLS.sharp + SYMBOLS.sharp + newLabel.slice(3);
+  } else if (newLabel.length > 1) {
     if (newLabel[1] === 'b')
       newLabel = newLabel[0] + SYMBOLS.flat + newLabel.slice(2);
     if (newLabel[1] === '#')
@@ -237,11 +297,25 @@ const formatLabel = (label) => {
   return newLabel;
 };
 
+/**
+ * Take in a scale object and return a formatted string.
+ * @param {scale} scale Scale object ex. {root: 'C', type: 'major'}
+ * @returns {string} Formatted label.
+ */
+const formatScaleLabel = (scale) => {
+  const scaleType = scale.type[0].toUpperCase() + scale.type.slice(1);
+  // Replace b/# with sharp/flat music symbols.
+  const scaleLetter = replaceFlatsSharps(scale.root);
+  return `${scaleLetter} ${scaleType} Scale`;
+};
+
 export {
   getCoords,
   validateRoute,
   detectEnharmonic,
-  formatLabel,
+  getRelatedKeys,
+  replaceFlatsSharps,
+  formatScaleLabel,
   DIAMETER,
   MAJOR_ROMAN_NUMS,
   MINOR_ROMAN_NUMS,

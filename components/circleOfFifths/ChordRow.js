@@ -1,40 +1,30 @@
-import { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { ScaleContext } from './contexts/scaleContext';
 import { getScale, getChordsOfScale } from './chordScaleHelpers';
-import FlipCard from './FlipCard';
+import CardRow from './CardRow';
+import Scale from './Scale';
 
 const useStyles = makeStyles({
-  chordRow: {
-    backgroundColor: 'pink',
-    color: 'white',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    justifyContent: 'space-evenly',
-  },
-  chordCardBox: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  chordRowRoot: {
+    backgroundColor: 'blue',
   },
 });
 
-export default function ChordRow() {
-  console.log('Chord Row Rendered');
+export default function ChordRow({ relatedKey }) {
   const classes = useStyles();
-  // Get scale and generate corresponding chords
-  const { scale } = useContext(ScaleContext);
-  const scaleNotes = getScale(scale.root, scale.type);
+
+  const { keySig, relationship } = relatedKey;
+
+  const scaleNotes = getScale(keySig.root, keySig.type);
   const chords = getChordsOfScale(scaleNotes);
 
-  // Map chords onto front/back of flip card
-  const chordRow = chords.map((chord, index) => (
-    <div key={index} className={classes.chordCardBox}>
-      <FlipCard chord={chord} />
+  return (
+    <div className={classes.chordRowRoot}>
+      <Scale
+        scaleNotes={scaleNotes}
+        keySig={keySig}
+        relationship={relationship}
+      />
+      <CardRow chords={chords} keySig={keySig} />
     </div>
-  ));
-
-  return <div className={classes.chordRow}>{chordRow}</div>;
+  );
 }

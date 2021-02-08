@@ -9,7 +9,7 @@ export default function PageLinks({ scaleType }) {
   );
 
   // Takes in a url string, return object with url string and formatted link label.
-  function formatLabel(url) {
+  function replaceFlatsSharps(url) {
     // Split URL into parts and capitalize each
     const words = url.split('-');
     const label = words
@@ -20,7 +20,7 @@ export default function PageLinks({ scaleType }) {
     return { url, label };
   }
 
-  const scales = scalesFiltered.map((scale) => formatLabel(scale));
+  const scales = scalesFiltered.map((scale) => replaceFlatsSharps(scale));
 
   return (
     <>
