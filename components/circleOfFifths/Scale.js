@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Scale({ scaleNotes, keySig, relationship }) {
+export default function Scale({ scaleNotes, keySig, relation }) {
   const classes = useStyles();
 
   const notes = scaleNotes.map((note, index) => (
@@ -30,7 +30,9 @@ export default function Scale({ scaleNotes, keySig, relationship }) {
 
   return (
     <div className={classes.scaleRoot}>
-      <h2 className={classes.title}>{relationship}</h2>
+      {relation === 'Primary' ? null : (
+        <h2 className={classes.title}>{relation}</h2>
+      )}
       <h2 className={classes.title}>{scaleTitle}</h2>
       {notes}
     </div>

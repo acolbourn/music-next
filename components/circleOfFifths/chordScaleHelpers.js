@@ -39,6 +39,29 @@ const CHORD_SYMBOLS = {
   augmented: ['+', 'aug'],
 };
 
+const CARD_LABELS = {
+  major: {
+    chords: ['Ⅰ', 'ⅱ', 'ⅲ', 'Ⅳ', 'Ⅴ', 'ⅵ', 'ⅶ°'],
+    majorCompare: [null],
+    minorCompare: ['♯3', '♯6', '♯7'],
+  },
+  naturalMinor: {
+    chords: ['ⅰ', 'ⅱ°', '♭Ⅲ', 'ⅳ', 'ⅴ', '♭Ⅵ', '♭Ⅶ'],
+    majorCompare: ['♭3', '♭6', '♭7'],
+    minorCompare: [null],
+  },
+  harmonicMinor: {
+    chords: ['ⅰ', 'ⅱ°', '♭Ⅲ+', 'ⅳ', 'Ⅴ', '♭Ⅵ', 'ⅶ°'],
+    majorCompare: ['♭3', '♭6'],
+    minorCompare: ['♯7'],
+  },
+  melodicMinor: {
+    chords: ['ⅰ', 'ⅱ', '♭Ⅲ+', 'Ⅳ', 'Ⅴ', 'ⅵ°', 'ⅶ°'],
+    majorCompare: ['♭3'],
+    minorCompare: ['♯6', '♯7'],
+  },
+};
+
 /**
  * Return scale of requested key signature
  *
@@ -196,4 +219,5 @@ export {
   getChordFromNotes,
   formatScaleURL,
   SCALE_URLS,
+  CARD_LABELS,
 };

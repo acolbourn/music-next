@@ -19,7 +19,7 @@ export default function ChordGrid() {
 
   // Create Chord row for each scale
   const chordRows = relatedKeys.map((relatedKey) => (
-    <div className={classes.chordGridRoot} key={relatedKey.relationship}>
+    <div className={classes.chordGridRoot} key={relatedKey.relation}>
       <ChordRow relatedKey={relatedKey} />
     </div>
   ));

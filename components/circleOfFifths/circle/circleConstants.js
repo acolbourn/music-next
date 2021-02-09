@@ -223,7 +223,7 @@ const detectEnharmonic = (keySig) => {
 /**
  * Take in a key signature and return array of related key signatures.
  * @param {object} keySig Primary key signature.
- * @returns {array} Array of related key signatures. Ex. {keySig: {root: 'a' type: 'naturalMinor'}, relationship: 'Parallel Minor'}
+ * @returns {array} Array of related key signatures. Ex. {keySig: {root: 'a' type: 'naturalMinor'}, relation: 'Parallel Minor'}
  */
 function getRelatedKeys(keySig) {
   // Detect if enharmonic key selected
@@ -240,33 +240,33 @@ function getRelatedKeys(keySig) {
   minor = minor[0].toUpperCase() + minor.slice(1);
 
   // Make array of related scales to display
-  let relatedKeys = [{ keySig: keySig, relationship: 'Primary' }];
+  let relatedKeys = [{ keySig: keySig, relation: 'Primary' }];
   if (keySig.type === 'major') {
     // Parallel minor
     relatedKeys.push({
       keySig: { root: major, type: 'naturalMinor' },
-      relationship: 'Parallel Minor',
+      relation: 'Parallel Minor',
     });
     // Relative minor
     relatedKeys.push({
       keySig: { root: minor, type: 'naturalMinor' },
-      relationship: 'Relative Minor',
+      relation: 'Relative Minor',
     });
   } else if (keySig.type === 'minor') {
     // Harmonic minor
     relatedKeys.push({
       keySig: { root: minor, type: 'harmonicMinor' },
-      relationship: 'Harmonic Minor',
+      relation: 'Harmonic Minor',
     });
     // Melodic minor
     relatedKeys.push({
       keySig: { root: minor, type: 'melodicMinor' },
-      relationship: 'Melodic Minor',
+      relation: 'Melodic Minor',
     });
     // Parallel major
     relatedKeys.push({
       keySig: { root: minor, type: 'major' },
-      relationship: 'Parallel Major',
+      relation: 'Parallel Major',
     });
   }
 
@@ -279,22 +279,17 @@ function getRelatedKeys(keySig) {
  * @returns {string} Label with flat/sharp symbols.
  */
 const replaceFlatsSharps = (label) => {
-  let newLabel = label;
-  // If flat or sharp, replace with symbol
-  if (newLabel.length > 2) {
-    // Handle double flats/sharps
-    if (newLabel[2] === 'b')
-      newLabel = newLabel[0] + SYMBOLS.flat + SYMBOLS.flat + newLabel.slice(3);
-    if (newLabel[2] === '#')
-      newLabel =
-        newLabel[0] + SYMBOLS.sharp + SYMBOLS.sharp + newLabel.slice(3);
-  } else if (newLabel.length > 1) {
-    if (newLabel[1] === 'b')
-      newLabel = newLabel[0] + SYMBOLS.flat + newLabel.slice(2);
-    if (newLabel[1] === '#')
-      newLabel = newLabel[0] + SYMBOLS.sharp + newLabel.slice(2);
+  // Replace b with flat symbol, skip 1st letter in case key is b
+  let newLabel = label.slice(1);
+  while (newLabel.includes('b')) {
+    newLabel = newLabel.replace('b', SYMBOLS.flat);
   }
-  return newLabel;
+  // Replace sharps
+  while (newLabel.includes('#')) {
+    newLabel = newLabel.replace('#', SYMBOLS.sharp);
+  }
+
+  return label[0] + newLabel;
 };
 
 /**

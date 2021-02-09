@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import { ANIMATION_TIME } from './circle/circleConstants';
-import ChordCard from './ChordCard';
 
 const useStyles = makeStyles((theme) => ({
   flipCardRoot: {
@@ -17,29 +16,12 @@ const useStyles = makeStyles((theme) => ({
     WebkitBackfaceVisibility: 'hidden',
     backgroundColor: theme.colors.background.primary,
   },
-  cardContent: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 }));
 
-export default function FlipCard({ chord }) {
-  console.log('FlipCard Rendered');
+export default function FlipCard({ newCard }) {
   const classes = useStyles();
   const [flip, setFlip] = useState(false);
   const isFirstRun = useRef(true);
-
-  // Memoized card which triggers update when chord prop changes
-  const newCard = useMemo(() => {
-    return (
-      <div key={chord.symbol} className={classes.cardContent}>
-        <ChordCard chord={chord.symbol} />
-      </div>
-    );
-  }, [chord, classes.cardContent]);
 
   // Create card queue with initial card on front/back
   const [cardQueue, setCardQueue] = useState([newCard, newCard]);
