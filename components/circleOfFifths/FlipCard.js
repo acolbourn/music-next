@@ -6,15 +6,16 @@ import { ANIMATION_TIME } from './circle/circleConstants';
 const useStyles = makeStyles((theme) => ({
   flipCardRoot: {
     position: 'relative',
-    width: '50px',
-    height: 100,
+    width: '100%',
+    height: '100%',
   },
   cardFace: {
     width: '100%',
-    borderRadius: 10,
+    height: '100%',
+    // borderRadius: 10,
     position: 'absolute',
     WebkitBackfaceVisibility: 'hidden',
-    backgroundColor: theme.colors.background.primary,
+    backgroundColor: theme.colors.secondary,
   },
 }));
 

@@ -5,9 +5,9 @@ import useDimensions from '../hooks/useDimensions';
 import { DIAMETER } from './circleConstants';
 import CircleMajor from './CircleMajor';
 
-const useStyles = makeStyles({
-  rootCircleOfFifths: {
-    backgroundColor: '#4A392C',
+const useStyles = makeStyles((theme) => ({
+  rootCircle: {
+    backgroundColor: theme.colors.background.primary,
     color: 'white',
     overflow: 'hidden',
     width: '100%',
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     bottom: 0,
     right: 0,
   },
-});
+}));
 
 export default function Circle() {
   const classes = useStyles();
@@ -45,7 +45,7 @@ export default function Circle() {
 
   return (
     <>
-      <div ref={circleBoxDimRef} className={classes.rootCircleOfFifths}>
+      <div ref={circleBoxDimRef} className={classes.rootCircle}>
         <motion.div
           className={classes.boxContent}
           animate={overallScale}

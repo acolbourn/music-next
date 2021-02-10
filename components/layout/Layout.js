@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
     `,
   },
   header: {
-    backgroundColor: theme.colors.background.navbar,
     gridArea: 'header',
   },
   bodyAndFooter: {
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   footer: {
-    backgroundColor: theme.colors.background.navbar,
+    backgroundColor: theme.colors.background.navBar,
     gridArea: 'footer',
   },
 }));

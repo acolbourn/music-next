@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { replaceFlatsSharps, formatScaleLabel } from './circle/circleConstants';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   scaleRoot: {
-    backgroundColor: 'blue',
+    backgroundColor: theme.colors.background.primary,
     display: 'flex',
     flexDirection: 'row',
   },
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     margin: '6px',
     fontSize: '1rem',
   },
-});
+}));
 
 export default function Scale({ scaleNotes, keySig, relation }) {
   const classes = useStyles();

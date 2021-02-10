@@ -14,7 +14,7 @@ const theme = createMuiTheme({
     },
     background: {
       primary: '#1D1D1D',
-      navbar: '#181818',
+      navBar: '#181818',
     },
   },
   fonts: {

@@ -1,25 +1,57 @@
+import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { replaceFlatsSharps } from './circle/circleConstants';
 
-const useStyles = makeStyles({
-  chordCardRoot: {
-    backgroundColor: 'blue',
-  },
+const useStyles = makeStyles((theme) => ({
+  chordCardRoot: ({ color }) => ({
+    // backgroundColor: theme.colors.secondary,
+    backgroundColor: color === 'standard' ? theme.colors.secondary : color,
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gridTemplateRows: '1fr 3px 1fr',
+    gridTemplateAreas: `
+      'romanNumeral'
+      'divider'
+      'chord'
+    `,
+  }),
   romanNumeral: {
-    backgroundColor: 'grey',
+    gridArea: 'romanNumeral',
+    // backgroundColor: theme.colors.secondary,
+    fontSize: '1.2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  divider: {
+    gridArea: 'divider',
+    width: '100%',
+    padding: '0 15%',
   },
   chord: {
-    backgroundColor: 'green',
+    gridArea: 'chord',
+    // backgroundColor: 'green',
+    fontSize: '1.2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-});
+}));
 
-export default function ChordCard({ chord, label }) {
-  const classes = useStyles();
+export default function ChordCard({ chord, label, color }) {
+  const classes = useStyles({ color });
+  const formattedChord = replaceFlatsSharps(chord);
 
   return (
     <div className={classes.chordCardRoot}>
       <div className={classes.romanNumeral}>{label}</div>
-      <div className={classes.chord}>{replaceFlatsSharps(chord)}</div>
+      <div className={classes.divider}>
+        <Divider />
+      </div>
+      <div className={classes.chord}>{formattedChord}</div>
     </div>
   );
 }

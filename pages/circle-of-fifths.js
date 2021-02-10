@@ -3,9 +3,9 @@ import Circle from '../components/circleOfFifths/circle/Circle';
 import { ScaleContextProvider } from '../components/circleOfFifths/contexts/scaleContext';
 import ChordGrid from '../components/circleOfFifths/ChordGrid';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: '#444444',
+    backgroundColor: theme.colors.background.primary,
     width: '100%',
     height: '100%',
     display: 'grid',
@@ -13,23 +13,25 @@ const useStyles = makeStyles({
         'circleArea chordGridArea'
       `,
     gridTemplateColumns: '1fr 1fr',
+    gridGap: theme.spacing(1),
+    padding: theme.spacing(1),
   },
   circleArea: {
     gridArea: 'circleArea',
-    backgroundColor: 'black',
+    backgroundColor: theme.colors.background.primary,
     color: 'white',
     // width: '1000px',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   chordGridArea: {
-    backgroundColor: 'grey',
+    backgroundColor: theme.colors.background.primary,
     gridArea: 'chordGridArea',
   },
-});
+}));
 
 export default function circleOfFifths() {
   console.log('circleOfFifths rendered');

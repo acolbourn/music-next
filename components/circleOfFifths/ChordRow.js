@@ -3,11 +3,11 @@ import { getScale, getChordsOfScale } from './chordScaleHelpers';
 import CardRow from './CardRow';
 import Scale from './Scale';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   chordRowRoot: {
-    backgroundColor: 'blue',
+    // backgroundColor: theme.colors.background.primary,
   },
-});
+}));
 
 export default function ChordRow({ relatedKey }) {
   const classes = useStyles();
@@ -20,7 +20,7 @@ export default function ChordRow({ relatedKey }) {
   return (
     <div className={classes.chordRowRoot}>
       <Scale scaleNotes={scaleNotes} keySig={keySig} relation={relation} />
-      <CardRow chords={chords} keySig={keySig} />
+      <CardRow chords={chords} keySig={keySig} relation={relation} />
     </div>
   );
 }
