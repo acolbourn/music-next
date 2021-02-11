@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
-import { DIAMETER, MAJOR_CHORD_COLORS, Z_INDEXES } from './circleConstants';
+import { DIAMETER, CIRCLE_COLORS, Z_INDEXES } from './circleConstants';
 
 const useStyles = makeStyles({
   colorWheel: (sliceParams) => ({
@@ -56,11 +56,11 @@ export default function ColorWheel({
   for (let i = 0; i < 12; i++) {
     let currentColor;
     if (i < 7) {
-      currentColor = MAJOR_CHORD_COLORS[i + 1];
+      currentColor = CIRCLE_COLORS[i + 1];
     } else if (i === 11) {
-      currentColor = MAJOR_CHORD_COLORS[0];
+      currentColor = CIRCLE_COLORS[0];
     } else {
-      currentColor = MAJOR_CHORD_COLORS[7]; // default color
+      currentColor = CIRCLE_COLORS[7]; // default color
     }
     slices.push(
       <div

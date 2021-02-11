@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { CARD_LABELS } from './chordScaleHelpers';
-import { MAJOR_CHORD_COLORS } from './circle/circleConstants';
+import { getCardColors } from './circle/circleConstants';
 import FlipCard from './FlipCard';
 import ChordCard from './ChordCard';
 
@@ -37,6 +37,13 @@ export default function CardRow({ chords, keySig, relation }) {
   const classes = useStyles();
 
   const labels = CARD_LABELS[keySig.type].chords;
+  // Get card colors
+  let colors = null;
+  if (relation === 'Primary') {
+    colors = getCardColors(1);
+  } else if (relation === 'Relative Minor') {
+    colors = getCardColors(6);
+  }
 
   // Create memoized card faces when chords prop changes
   const newCards = useMemo(() => {
@@ -45,9 +52,7 @@ export default function CardRow({ chords, keySig, relation }) {
         <ChordCard
           chord={chord.symbol}
           label={labels[index]}
-          color={
-            relation === 'Primary' ? MAJOR_CHORD_COLORS[index] : 'standard'
-          }
+          color={colors === null ? 'standard' : colors[index]}
         />
       </div>
     ));

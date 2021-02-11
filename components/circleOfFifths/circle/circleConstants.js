@@ -52,26 +52,51 @@ const KEY_SIGS_MINOR = [
   'c#',
 ];
 
-const MAJOR_CHORD_COLORS = [
-  '#00CE00',
+// Major colors from hooktheory, minor and mode colors are generated from this set.
+const chordColors = [
   '#FF2300',
-  '#3537FF',
   '#FFAF00',
-  '#BA36E6',
   '#F3E200',
-  '#FF38CB',
-  'black',
-];
-const MINOR_CHORD_COLORS = [
-  '#BA36E6',
-  '#F3E200',
-  '#FF38CB',
   '#00CE00',
-  '#FF2300',
   '#3537FF',
-  '#FFAF00',
-  'black',
+  '#BA36E6',
+  '#FF38CB',
 ];
+const defaultCircleColor = 'black';
+
+/**
+ * Take in a musical mode as an int and return card colors.
+ * @param {integer} mode Musical mode (ex. ionian = 1, dorian = 2)
+ * @returns {array} Array of colors as strings.
+ */
+function getCardColors(mode) {
+  let colors = [];
+  // Loop through colors and add to colors array starting on desired mode. Loopback when end exceeded.
+  let j = mode - 1;
+  for (let i in chordColors) {
+    if (j > 6) j = 0;
+    colors.push(chordColors[j]);
+    j++;
+  }
+  return colors;
+}
+
+// Map chord colors onto circle, all modes follow some order.
+const circleColorMap = {
+  0: 3,
+  1: 0,
+  2: 4,
+  3: 1,
+  4: 5,
+  5: 2,
+  6: 6,
+};
+let CIRCLE_COLORS = [];
+for (let i in chordColors) {
+  CIRCLE_COLORS.push(chordColors[circleColorMap[i]]);
+}
+CIRCLE_COLORS.push(defaultCircleColor);
+
 const Z_INDEXES = {
   romanRing: 5,
   colorWheel: 10,
@@ -242,15 +267,15 @@ function getRelatedKeys(keySig) {
   // Make array of related scales to display
   let relatedKeys = [{ keySig: keySig, relation: 'Primary' }];
   if (keySig.type === 'major') {
-    // Parallel minor
-    relatedKeys.push({
-      keySig: { root: major, type: 'naturalMinor' },
-      relation: 'Parallel Minor',
-    });
     // Relative minor
     relatedKeys.push({
       keySig: { root: minor, type: 'naturalMinor' },
       relation: 'Relative Minor',
+    });
+    // Parallel minor
+    relatedKeys.push({
+      keySig: { root: major, type: 'naturalMinor' },
+      relation: 'Parallel Minor',
     });
   } else if (keySig.type === 'minor') {
     // Harmonic minor
@@ -311,11 +336,11 @@ export {
   getRelatedKeys,
   replaceFlatsSharps,
   formatScaleLabel,
+  getCardColors,
   DIAMETER,
   MAJOR_ROMAN_NUMS,
   MINOR_ROMAN_NUMS,
-  MAJOR_CHORD_COLORS,
-  MINOR_CHORD_COLORS,
+  CIRCLE_COLORS,
   KEY_SIGS,
   KEY_SIGS_MAJOR,
   KEY_SIGS_MINOR,
