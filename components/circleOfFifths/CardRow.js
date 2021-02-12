@@ -5,18 +5,29 @@ import { getCardColors } from './circle/circleConstants';
 import FlipCard from './FlipCard';
 import ChordCard from './ChordCard';
 
+// To create background image behind cards, a mixture of borders and box shadows are used.  Box shadows create the window effect and grid spacing is calculated using cardSpacing variable in px.
+const cardSpacing = 4;
+
 const useStyles = makeStyles((theme) => ({
   chordRow: {
     backgroundColor: theme.colors.background.primary,
+    backgroundColor: 'transparent',
     color: 'white',
     width: '100%',
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(min-content, 1fr))',
     gridTemplateRows: '80px',
-    gridColumnGap: '4px',
-    padding: '4px',
+    // gridColumnGap: '4px',
+  },
+  holeCutOut: {
+    overflow: 'hidden',
+    border: `${cardSpacing}px solid ${theme.colors.background.primary}`,
   },
   chordCardBox: {
+    // Box shadow is used to make a hole behind card so background gif is visible
+    boxShadow: `0 0 0 800px ${theme.colors.background.primary}`,
+    // Make border radius slightly bigger to fill in corner gaps
+    borderRadius: `${theme.misc.borderRadius + 3}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -60,8 +71,10 @@ export default function CardRow({ chords, keySig, relation }) {
 
   // Map new card faces onto flip card
   const chordRow = newCards.map((newCard, index) => (
-    <div key={index} className={classes.chordCardBox}>
-      <FlipCard newCard={newCard} />
+    <div key={index} className={classes.holeCutOut}>
+      <div className={classes.chordCardBox}>
+        <FlipCard newCard={newCard} />
+      </div>
     </div>
   ));
 

@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: color === 'standard' ? theme.colors.secondary : color,
     width: '100%',
     height: '100%',
-    borderRadius: 10,
+    borderRadius: theme.misc.borderRadius,
     display: 'grid',
     gridTemplateColumns: '1fr',
     gridTemplateRows: '1fr 3px 1fr',

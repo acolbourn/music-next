@@ -7,6 +7,9 @@ import ChordRow from './ChordRow';
 const useStyles = makeStyles({
   chordGridRoot: {
     color: 'white',
+    // favorites: 12,18, 20, 21, 22, 23, 25, 26, 27, 28, 29
+    backgroundImage: "url('/images/gears/gear22.gif')",
+    backgroundSize: 'cover',
   },
 });
 
@@ -19,10 +22,8 @@ export default function ChordGrid() {
 
   // Create Chord row for each scale
   const chordRows = relatedKeys.map((relatedKey) => (
-    <div className={classes.chordGridRoot} key={relatedKey.relation}>
-      <ChordRow relatedKey={relatedKey} />
-    </div>
+    <ChordRow relatedKey={relatedKey} key={relatedKey.relation} />
   ));
 
-  return <>{chordRows}</>;
+  return <div className={classes.chordGridRoot}>{chordRows}</div>;
 }

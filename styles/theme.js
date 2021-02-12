@@ -22,6 +22,9 @@ const theme = createMuiTheme({
     secondary: 'AvenirNextCyr-Light, AvenirNextCyr-Thin, sans-serif',
     music: 'Campania',
   },
+  misc: {
+    borderRadius: 6,
+  },
   typography: {
     fontFamily: [
       'ProximaNova, AvenirNextCyr-Light, AvenirNextCyr-Thin, sans-serif',
