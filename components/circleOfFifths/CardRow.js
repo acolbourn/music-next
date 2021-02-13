@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(min-content, 1fr))',
     gridTemplateRows: '80px',
-    // gridColumnGap: '4px',
   },
   holeCutOut: {
     overflow: 'hidden',
@@ -28,18 +27,13 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: `0 0 0 800px ${theme.colors.background.primary}`,
     // Make border radius slightly bigger to fill in corner gaps
     borderRadius: `${theme.misc.borderRadius + 3}px`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '100%',
+    // width: 'calc(100% + 2px)',
     height: '100%',
   },
   cardContent: {
     width: '100%',
     height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 }));
 

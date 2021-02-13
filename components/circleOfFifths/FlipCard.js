@@ -65,6 +65,8 @@ export default function FlipCard({ newCard }) {
         initial={{ rotateY: 0 }}
         animate={{ rotateY: flip ? -180 : 0 }}
         transition={{ duration: ANIMATION_TIME }}
+        // onAnimationStart={onStart}
+        // onAnimationComplete={onEnd}
       >
         {side1}
       </motion.div>
