@@ -9,12 +9,19 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
     display: 'grid',
+    gridGap: theme.spacing(1),
+    padding: theme.spacing(1),
     gridTemplateAreas: `        
         'circleArea chordGridArea'
       `,
-    gridTemplateColumns: '1fr 1fr',
-    gridGap: theme.spacing(1),
-    padding: theme.spacing(1),
+    gridTemplateColumns: 'minmax(300px, 2fr) 3fr',
+    [theme.breakpoints.down('xs')]: {
+      gridTemplateAreas: `        
+        'circleArea'
+        'chordGridArea'
+      `,
+      gridTemplateColumns: '1fr',
+    },
   },
   circleArea: {
     gridArea: 'circleArea',

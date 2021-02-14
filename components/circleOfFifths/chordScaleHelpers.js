@@ -204,9 +204,9 @@ const getScaleURLS = () => {
   KEY_SIGS.forEach((row) => {
     // Each key signature row contains a major and a minor key.  It also may contain an enharmonic major/minor.  Format URLs for all keys that exist.
     URLRoutes.push(formatScaleURL(row.major, 'major'));
-    URLRoutes.push(formatScaleURL(row.minor, 'minor'));
+    // URLRoutes.push(formatScaleURL(row.minor, 'minor'));
     if (row.enharmMaj) URLRoutes.push(formatScaleURL(row.enharmMaj, 'major'));
-    if (row.enharmMin) URLRoutes.push(formatScaleURL(row.enharmMin, 'minor'));
+    // if (row.enharmMin) URLRoutes.push(formatScaleURL(row.enharmMin, 'minor'));
   });
   return URLRoutes;
 };
