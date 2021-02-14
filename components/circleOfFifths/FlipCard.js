@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import { ANIMATION_TIME } from './circle/circleConstants';
+import { AnimationContext } from './contexts/animationContext';
 
 const useStyles = makeStyles((theme) => ({
   flipCardRoot: {
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FlipCard({ newCard }) {
   const classes = useStyles();
+  const { isBackground, setIsBackground } = useContext(AnimationContext);
   const [flip, setFlip] = useState(false);
   const isFirstRun = useRef(true);
 
@@ -58,6 +60,19 @@ export default function FlipCard({ newCard }) {
     side2 = cardQueue[0];
   }
 
+  // Update animation context on start/finish so gif background is toggled on/off.  This is necessary to ensure background is not visible if framer-motion causes gaps on card edges.
+  const onAnimStart = () => {
+    if (isBackground !== true) {
+      setIsBackground(true);
+    }
+  };
+
+  const onAnimEnd = () => {
+    if (isBackground !== false) {
+      setIsBackground(false);
+    }
+  };
+
   return (
     <motion.div className={classes.flipCardRoot}>
       <motion.div
@@ -65,8 +80,8 @@ export default function FlipCard({ newCard }) {
         initial={{ rotateY: 0 }}
         animate={{ rotateY: flip ? -180 : 0 }}
         transition={{ duration: ANIMATION_TIME }}
-        // onAnimationStart={onStart}
-        // onAnimationComplete={onEnd}
+        onAnimationStart={onAnimStart}
+        onAnimationComplete={onAnimEnd}
       >
         {side1}
       </motion.div>

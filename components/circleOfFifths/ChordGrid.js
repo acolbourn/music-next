@@ -1,16 +1,26 @@
-import { useContext, useState, useRef } from 'react';
+import { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { ScaleContext } from './contexts/scaleContext';
 import { getRelatedKeys } from './circle/circleConstants';
+import { AnimationContextProvider } from './contexts/animationContext';
 import ChordRow from './ChordRow';
 import ChordGridBackground from './ChordGridBackground';
 
 const useStyles = makeStyles({
   chordGridRoot: {
-    color: 'white',
-    // favorites: 12,18, 20, 21, 22, 23, 25, 26, 27, 28, 29
-    // backgroundImage: "url('/images/gears/gear29.gif')",
-    backgroundSize: 'cover',
+    display: 'grid',
+  },
+  chordRowBox: {
+    gridArea: '1 / 1 / 2 / 2',
+    zIndex: '4',
+    width: '100%',
+    height: '100%',
+  },
+  background: {
+    gridArea: '1 / 1 / 2 / 2',
+    zIndex: '3',
+    width: '100%',
+    height: '100%',
   },
 });
 
@@ -26,5 +36,14 @@ export default function ChordGrid() {
     <ChordRow relatedKey={relatedKey} key={relatedKey.relation} />
   ));
 
-  return <div className={classes.chordGridRoot}>{chordRows}</div>;
+  return (
+    <AnimationContextProvider>
+      <div className={classes.chordGridRoot}>
+        <div className={classes.chordRowBox}>{chordRows}</div>
+        <div className={classes.background}>
+          <ChordGridBackground />
+        </div>
+      </div>
+    </AnimationContextProvider>
+  );
 }
