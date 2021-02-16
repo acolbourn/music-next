@@ -277,6 +277,31 @@ function getRelatedKeys(keySig) {
       keySig: { root: major, type: 'naturalMinor' },
       relation: 'Parallel Minor',
     });
+    // Dorian
+    relatedKeys.push({
+      keySig: { root: major, type: 'dorian' },
+      relation: 'Dorian',
+    });
+    // Phrygian
+    relatedKeys.push({
+      keySig: { root: major, type: 'phrygian' },
+      relation: 'Phrygian',
+    });
+    // Lydian
+    relatedKeys.push({
+      keySig: { root: major, type: 'lydian' },
+      relation: 'Lydian',
+    });
+    // Mixolydian
+    relatedKeys.push({
+      keySig: { root: major, type: 'mixolydian' },
+      relation: 'Mixolydian',
+    });
+    // Locrian
+    relatedKeys.push({
+      keySig: { root: major, type: 'locrian' },
+      relation: 'Locrian',
+    });
   } else if (keySig.type === 'minor') {
     // Harmonic minor
     relatedKeys.push({

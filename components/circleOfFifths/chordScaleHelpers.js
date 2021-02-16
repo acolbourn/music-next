@@ -22,6 +22,11 @@ const SCALE_INTERVALS = {
   naturalMinor: [2, 1, 2, 2, 1, 2, 2],
   harmonicMinor: [2, 1, 2, 2, 1, 3, 1],
   melodicMinor: [2, 1, 2, 2, 2, 2, 1],
+  dorian: [2, 1, 2, 2, 2, 1, 2],
+  phrygian: [1, 2, 2, 2, 1, 2, 2],
+  lydian: [2, 2, 2, 1, 2, 2, 1],
+  mixolydian: [2, 2, 1, 2, 2, 1, 2],
+  locrian: [1, 2, 2, 1, 2, 2, 2],
 };
 
 // A dictionary of chords based on the intervals between notes. Encoded this way for O(1) searches.
@@ -59,6 +64,31 @@ const CARD_LABELS = {
     chords: ['ⅰ', 'ⅱ', '♭Ⅲ+', 'Ⅳ', 'Ⅴ', 'ⅵ°', 'ⅶ°'],
     majorCompare: ['♭3'],
     minorCompare: ['♯6', '♯7'],
+  },
+  dorian: {
+    chords: ['ⅰ', 'ⅱ', '♭Ⅲ', 'Ⅳ', 'ⅴ', 'ⅵ°', '♭Ⅶ'],
+    majorCompare: ['♭3', '♭7'],
+    minorCompare: ['♯6'],
+  },
+  phrygian: {
+    chords: ['ⅰ', '♭Ⅱ', '♭Ⅲ', 'ⅳ', 'ⅴ°', '♭Ⅵ', '♭ⅶ'],
+    majorCompare: ['♭2', '♭3', '♭6', '♭7'],
+    minorCompare: ['♭2'],
+  },
+  lydian: {
+    chords: ['Ⅰ', 'Ⅱ', 'ⅲ', '♯ⅳ°', 'Ⅴ', 'ⅵ', 'ⅶ'],
+    majorCompare: ['♯4'],
+    minorCompare: ['♯3', '♯4', '♯6', '♯7'],
+  },
+  mixolydian: {
+    chords: ['Ⅰ', 'ⅱ', 'ⅲ°', 'Ⅳ', 'ⅴ', 'ⅵ', '♭Ⅶ'],
+    majorCompare: ['♭7'],
+    minorCompare: ['♯3', '♯6'],
+  },
+  locrian: {
+    chords: ['ⅰ°', '♭Ⅱ', '♭ⅲ', 'ⅳ', '♭Ⅴ', '♭Ⅵ', '♭ⅶ'],
+    majorCompare: ['♭2', '♭3', '♭5', '♭6', '♭7'],
+    minorCompare: ['♭2', '♭5'],
   },
 };
 
