@@ -41,7 +41,7 @@ export default function ChordGrid() {
       <div className={classes.chordGridRoot}>
         <div className={classes.chordRowBox}>{chordRows}</div>
         <div className={classes.background}>
-          <ChordGridBackground />
+          {/* <ChordGridBackground /> */}
         </div>
       </div>
     </AnimationContextProvider>

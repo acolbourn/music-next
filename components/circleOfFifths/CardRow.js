@@ -42,13 +42,7 @@ export default function CardRow({ chords, keySig, relation }) {
   const classes = useStyles();
 
   const labels = CARD_LABELS[keySig.type].chords;
-  // Get card colors
-  let colors = null;
-  if (relation === 'Primary') {
-    colors = getCardColors(1);
-  } else if (relation === 'Relative Minor') {
-    colors = getCardColors(6);
-  }
+  const colors = getCardColors(relation);
 
   // Create memoized card faces when chords prop changes
   const newCards = useMemo(() => {

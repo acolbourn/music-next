@@ -64,12 +64,35 @@ const chordColors = [
 ];
 const defaultCircleColor = 'black';
 
+const modeDictionary = {
+  Primary: 1,
+  'Relative Minor': 6,
+  Ionian: 1,
+  Dorian: 2,
+  Phrygian: 3,
+  Lydian: 4,
+  Mixolydian: 5,
+  Aeolian: 6,
+  Locrian: 7,
+};
+
 /**
- * Take in a musical mode as an int and return card colors.
- * @param {integer} mode Musical mode (ex. ionian = 1, dorian = 2)
- * @returns {array} Array of colors as strings.
+ * Take in a musical mode and return card colors.
+ * @param {any} modeRequest Musical mode as an int (ex. ionian = 1, dorian = 2) or a string of relation to major (ex. 'dorian', 'Relative Minor').
+ * @returns {array} Array of colors as strings, null if not found.
  */
-function getCardColors(mode) {
+function getCardColors(modeRequest) {
+  let mode;
+  if (typeof modeRequest === 'number') {
+    mode = modeRequest;
+  } else if (typeof modeRequest === 'string') {
+    mode = modeDictionary[modeRequest];
+  } else {
+    mode = 0;
+  }
+
+  if (mode < 1 || mode > 7) return null;
+
   let colors = [];
   // Loop through colors and add to colors array starting on desired mode. Loopback when end exceeded.
   let j = mode - 1;
