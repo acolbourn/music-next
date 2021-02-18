@@ -8,11 +8,12 @@ const useStyles = makeStyles({
   rootRomanRing: (Z_INDEXES) => ({
     width: DIAMETER,
     height: DIAMETER,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // right: 0,
+    // bottom: 0,
+    gridArea: '1 / 1 / 2 / 2',
     zIndex: Z_INDEXES.romanRing,
   }),
 });

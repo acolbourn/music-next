@@ -1,5 +1,3 @@
-const DIAMETER = 500; // Overall circle diameter
-
 const KEY_SIGS = [
   { major: 'A', minor: 'f#', enharmMaj: null, enharmMin: null },
   { major: 'D', minor: 'b', enharmMaj: null, enharmMin: null },
@@ -120,6 +118,13 @@ for (let i in chordColors) {
 }
 CIRCLE_COLORS.push(defaultCircleColor);
 
+const DIAMETER = 500; // Overall circle diameter
+// Outer diameters of each ring and thickness
+const RING_DIMENSIONS = {
+  thickness: 50, // (100/2 = 50 to account for 2 sides of circle)
+  outerDiameters: [100, 200, 300, 400, 500],
+};
+// Z indexes of each ring of circle
 const Z_INDEXES = {
   romanRing: 5,
   colorWheel: 10,
@@ -393,6 +398,7 @@ export {
   KEY_SIGS_MAJOR,
   KEY_SIGS_MINOR,
   Z_INDEXES,
+  RING_DIMENSIONS,
   ROMAN_RING_POSITIONS,
   ANIMATION_TIME,
   SYMBOLS,

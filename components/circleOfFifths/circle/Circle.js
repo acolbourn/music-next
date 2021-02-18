@@ -12,14 +12,17 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     width: '100%',
     paddingTop: '100%' /* Makes height 1:1 Aspect with width */,
-    position: 'relative',
+    // position: 'relative',
   },
   boxContent: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // bottom: 0,
+    // right: 0,
+    width: DIAMETER,
+    height: DIAMETER,
+    display: 'grid',
   },
 }));
 

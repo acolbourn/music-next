@@ -1,12 +1,27 @@
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
-import { DIAMETER, CIRCLE_COLORS, Z_INDEXES } from './circleConstants';
+import {
+  CIRCLE_COLORS,
+  Z_INDEXES,
+  RING_DIMENSIONS,
+  DIAMETER,
+} from './circleConstants';
 
 const useStyles = makeStyles({
   colorWheel: (sliceParams) => ({
-    width: sliceParams.diameter,
-    height: sliceParams.diameter,
-    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    gridArea: '1 / 1 / 2 / 2',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // width: DIAMETER,
+    // height: DIAMETER,
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // right: 0,
+    // bottom: 0,
     zIndex: sliceParams.zIndex,
   }),
   slices: (sliceParams) => ({
@@ -42,9 +57,11 @@ export default function ColorWheel({
   console.log('ColorWheel Rendered');
   // Pie slice parameters created using equations from https://stackoverflow.com/questions/56797060/css-only-pie-chart-how-to-add-spacing-padding-between-slices
   const sliceParams = {
-    diameter: DIAMETER, // outer circle diameter
+    diameter: RING_DIMENSIONS.outerDiameters[3], // outer circle diameter
+    // diameter: DIAMETER, // outer circle diameter
     gap: '0px', // Gap between slices
-    size: DIAMETER / 4, // Slice Size (half of radius to account for inner circle taking 50%)
+    size: RING_DIMENSIONS.thickness, // Slice Size (half of radius to account for inner circle taking 50%)
+    // size: DIAMETER / 4, // Slice Size (half of radius to account for inner circle taking 50%)
     factor: 78.8675134595, // Percent factor for 12 slices
     zIndex: Z_INDEXES.colorWheel,
   };
