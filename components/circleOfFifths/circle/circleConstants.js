@@ -176,12 +176,32 @@ const ROMAN_RING_POSITIONS = [
 // Global animation speed of framer-motion effects in seconds.
 const ANIMATION_TIME = 2;
 
-// Calculate x and y coordinates for text on circle
-const getCoords = (theta, radius, center) => {
+// Calculate x and y coordinates for single item on circle
+const getSingleCoord = (theta, radius, center) => {
   return {
     left: Math.cos(theta) * radius + center.x,
     top: -Math.sin(theta) * radius + center.y,
   };
+};
+
+/**
+ * Calculate x and y coordinates for each label on a ring.
+ * @param {number} outerDiameter Ring outer diameter.
+ * @param {*} thickness Ring thickness.
+ * @returns {array} Array of coordinates for all labels on ring.
+ */
+const getCoords = (outerDiameter, thickness) => {
+  const radius = outerDiameter / 2;
+  const innerRadius = radius - thickness / 2;
+  const textRadius = (radius + innerRadius) / 2;
+  const globalRadius = DIAMETER / 2;
+  const centerPos = { x: globalRadius, y: globalRadius };
+
+  let coords = [];
+  for (let i = 0; i < 12; i++) {
+    coords.push(getSingleCoord((Math.PI / 6) * i, textRadius, centerPos));
+  }
+  return coords;
 };
 
 /**

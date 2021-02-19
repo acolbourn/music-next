@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Circle from '../components/circleOfFifths/circle/Circle';
 import { ScaleContextProvider } from '../components/circleOfFifths/contexts/scaleContext';
 import ChordGrid from '../components/circleOfFifths/ChordGrid';
+import CircleStack from '../components/circleOfFifths/circle/CircleStack.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateAreas: `        
         'circleArea chordGridArea'
       `,
-    gridTemplateColumns: 'minmax(300px, 2fr) 3fr',
+    gridTemplateColumns: 'minmax(500px,1fr) 1fr',
+    // gridTemplateColumns: 'minmax(300px, 2fr) 3fr',
     [theme.breakpoints.down('xs')]: {
       gridTemplateAreas: `        
         'circleArea'
@@ -47,7 +49,8 @@ export default function circleOfFifths() {
     <ScaleContextProvider>
       <div className={classes.root}>
         <div className={classes.circleArea}>
-          <Circle />
+          {/* <Circle /> */}
+          <CircleStack />
         </div>
         <div className={classes.chordGridArea}>
           <ChordGrid />
