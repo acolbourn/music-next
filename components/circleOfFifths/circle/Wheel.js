@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
-import Labels from './Labels';
 
 const useStyles = makeStyles({
   wheelRoot: (sliceParams) => ({
@@ -13,7 +12,7 @@ const useStyles = makeStyles({
     position: 'relative',
     overflow: 'hidden',
     transform: 'rotate(-15deg)',
-    opacity: 0.75,
+    // opacity: 0.75,
     '& > *': {
       position: 'absolute',
       top: 0,

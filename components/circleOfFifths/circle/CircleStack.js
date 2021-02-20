@@ -1,14 +1,20 @@
+import { useContext, useMemo } from 'react';
 import Ring from './Ring';
 import { makeStyles } from '@material-ui/core/styles';
-import { DIAMETER, CIRCLE_COLORS } from './circleConstants';
+import {
+  CIRCLE_COLORS,
+  DIAMETER,
+  KEY_SIGS,
+  detectEnharmonic,
+  replaceFlatsSharps,
+} from './circleConstants';
+
+import { ScaleContext } from '../contexts/scaleContext';
 
 const useStyles = makeStyles({
   circleStackRoot: {
     width: DIAMETER,
     height: DIAMETER,
-    // position: 'absolute',
-    // top: `${sliceParams.diameter / 2}px`,
-    // left: `${sliceParams.diameter / 2}px`,
     display: 'grid',
   },
   stack: {
@@ -23,43 +29,75 @@ const useStyles = makeStyles({
 
 export default function CircleStack() {
   const classes = useStyles();
-  const thickness = 100; // Ring thickness
 
+  // Get global key signature scale
+  const { scale } = useContext(ScaleContext);
+
+  // Detect if enharmonic key selected and create new label if so
+  const { matchingKey, enharmonicDetected } = detectEnharmonic(scale);
+  // Create label replacement
+  let labelReplacement = null;
+  if (enharmonicDetected) {
+    labelReplacement = { ...matchingKey };
+    labelReplacement.newRoot = scale.root;
+  }
+
+  // Memoize so labels only run once.  In very rare circumstance user selects an enharmonic key and labels re-render.
+  const keySigLabels = useMemo(() => {
+    const labelsMajMin = KEY_SIGS.map((keySig, index) => {
+      let majorLabel = keySig['major'];
+      // If enharmonic key detected, update label of matching key
+      if (labelReplacement !== null && labelReplacement.root === majorLabel) {
+        majorLabel = labelReplacement.newRoot;
+      }
+      // Replace b/# with sharp/flat music symbols.
+      majorLabel = replaceFlatsSharps(majorLabel);
+      return majorLabel;
+    });
+    return labelsMajMin;
+  }, [labelReplacement]);
+
+  const thickness = 98; // Ring thickness
   const ringParameters = [
-    // Sharps and Flats
     {
+      ringName: 'sharpsAndFlats',
       outerDiameter: 100,
       thickness: thickness,
       colors: CIRCLE_COLORS,
       zIndex: 15,
+      labels: keySigLabels,
     },
-    // Minor Roman Numerals
     {
+      ringName: 'minorNumerals',
       outerDiameter: 200,
       thickness: thickness,
       colors: CIRCLE_COLORS,
       zIndex: 14,
+      labels: ['ⅶ°', 'ⅲ', 'ⅵ', 'ⅱ'],
     },
-    // Minor Key Signatures
     {
+      ringName: 'minorKeySigs',
       outerDiameter: 300,
       thickness: thickness,
       colors: CIRCLE_COLORS,
       zIndex: 13,
+      labels: keySigLabels,
     },
-    // Major Key Signatures
     {
+      ringName: 'majorKeySigs',
       outerDiameter: 400,
       thickness: thickness,
       colors: CIRCLE_COLORS,
       zIndex: 12,
+      labels: keySigLabels,
     },
-    // Major Roman Numerals
     {
+      ringName: 'majorNumerals',
       outerDiameter: 500,
       thickness: thickness,
       colors: CIRCLE_COLORS,
       zIndex: 11,
+      labels: ['Ⅴ', 'Ⅰ', 'Ⅳ'],
     },
   ];
 
@@ -68,7 +106,7 @@ export default function CircleStack() {
       <div
         className={classes.stack}
         style={{ zIndex: ringParams.zIndex }}
-        key={ringParams.outerDiameter}
+        key={ringParams.ringName}
       >
         <Ring ringParams={ringParams} />
       </div>

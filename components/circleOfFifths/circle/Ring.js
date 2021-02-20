@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 export default function Ring({ ringParams }) {
   const classes = useStyles();
-  const { outerDiameter, thickness, colors } = ringParams;
+  const { outerDiameter, thickness, colors, ringName, labels } = ringParams;
 
   return (
     <div className={classes.ringRoot}>
