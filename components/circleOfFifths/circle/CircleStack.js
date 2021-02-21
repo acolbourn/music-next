@@ -15,15 +15,22 @@ const useStyles = makeStyles({
   circleStackRoot: {
     width: DIAMETER,
     height: DIAMETER,
-    display: 'grid',
+    // display: 'grid',
+    position: 'relative',
   },
   stack: {
-    width: '100%',
-    height: '100%',
-    gridArea: '1 / 1 / 2 / 2',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: DIAMETER,
+    height: DIAMETER,
+    // width: '100%',
+    // height: '100%',
+    // gridArea: '1 / 1 / 2 / 2',
+
+    // display: 'flex',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
 });
 
@@ -57,7 +64,7 @@ export default function CircleStack() {
     return labelsMajMin;
   }, [labelReplacement]);
 
-  const thickness = 98; // Ring thickness
+  const thickness = 96; // Ring thickness
   const ringParameters = [
     {
       ringName: 'sharpsAndFlats',

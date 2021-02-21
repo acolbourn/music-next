@@ -1,10 +1,14 @@
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
+import { DIAMETER } from './circleConstants';
 
 const useStyles = makeStyles({
   wheelRoot: (sliceParams) => ({
     width: sliceParams.diameter,
     height: sliceParams.diameter,
+    position: 'absolute',
+    top: sliceParams.centerOffset,
+    left: sliceParams.centerOffset,
   }),
   slices: (sliceParams) => ({
     height: sliceParams.diameter,
@@ -29,6 +33,15 @@ const useStyles = makeStyles({
         `,
     },
   }),
+  circleOnly: (sliceParams) => ({
+    width: sliceParams.diameter,
+    height: sliceParams.diameter,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    borderRadius: '50%',
+    opacity: '0.5',
+  }),
 });
 
 export default function Wheel({ ringParams }) {
@@ -41,6 +54,7 @@ export default function Wheel({ ringParams }) {
     gap: '2px', // Gap between slices
     thickness: thickness / 2, // Ring thickness
     factor: 78.8675134595, // Percent factor for 12 slices
+    centerOffset: (DIAMETER - outerDiameter) / 2,
   };
 
   const classes = useStyles(sliceParams);
@@ -67,6 +81,10 @@ export default function Wheel({ ringParams }) {
   return (
     <motion.div className={classes.wheelRoot}>
       <div className={classes.slices}>{slices}</div>
+      {/* <div
+        className={classes.circleOnly}
+        style={{ backgroundColor: colors[outerDiameter / 100] }}
+      ></div> */}
     </motion.div>
   );
 }

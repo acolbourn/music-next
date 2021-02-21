@@ -3,6 +3,7 @@ import Circle from '../components/circleOfFifths/circle/Circle';
 import { ScaleContextProvider } from '../components/circleOfFifths/contexts/scaleContext';
 import ChordGrid from '../components/circleOfFifths/ChordGrid';
 import CircleStack from '../components/circleOfFifths/circle/CircleStack.js';
+import CircleSVG from '../components/circleOfFifths/circle/CircleSVG';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,7 +51,8 @@ export default function circleOfFifths() {
       <div className={classes.root}>
         <div className={classes.circleArea}>
           {/* <Circle /> */}
-          <CircleStack />
+          {/* <CircleStack /> */}
+          <CircleSVG />
         </div>
         <div className={classes.chordGridArea}>
           <ChordGrid />

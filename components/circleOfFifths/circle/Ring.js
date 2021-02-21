@@ -5,17 +5,25 @@ import Labels from './Labels';
 
 const useStyles = makeStyles({
   ringRoot: {
+    // width: DIAMETER,
+    // height: DIAMETER,
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: DIAMETER,
     height: DIAMETER,
-    display: 'grid',
+    // display: 'grid',
   },
   wheelLabelStack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: DIAMETER,
     height: DIAMETER,
-    gridArea: '1 / 1 / 2 / 2',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    // gridArea: '1 / 1 / 2 / 2',
+    // display: 'flex',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
 });
 
@@ -28,9 +36,9 @@ export default function Ring({ ringParams }) {
       <div className={classes.wheelLabelStack}>
         <Wheel ringParams={ringParams} />
       </div>
-      <div className={classes.wheelLabelStack}>
+      {/* <div className={classes.wheelLabelStack}>
         <Labels ringParams={ringParams} />
-      </div>
+      </div> */}
     </div>
   );
 }
