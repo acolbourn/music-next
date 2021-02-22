@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateAreas: `        
         'circleArea chordGridArea'
       `,
-    gridTemplateColumns: 'minmax(500px,1fr) 1fr',
-    // gridTemplateColumns: 'minmax(300px, 2fr) 3fr',
+    // gridTemplateColumns: 'minmax(500px,1fr) 1fr',
+    gridTemplateColumns: 'minmax(300px, 2fr) 3fr',
     [theme.breakpoints.down('xs')]: {
       gridTemplateAreas: `        
         'circleArea'

@@ -1,34 +1,31 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { DIAMETER } from './circleConstants';
+import { CIRCLE_COLORS, DIAMETER } from './circleConstants';
+import RingSVG from './RingSVG';
 
 const useStyles = makeStyles({
-  circleSVGRoot: {
-    width: '500px',
-    height: '500px',
-    backgroundColor: 'blue',
-  },
+  circleSVGRoot: ({ backgroundColor }) => ({
+    width: '100%',
+    height: '100%',
+    backgroundColor: backgroundColor,
+    // display: 'flex',
+    // justifyContent: 'flex-start',
+    // alignItems: 'center',
+  }),
   SVGViewbox: {
-    width: '500px',
-    height: '500px',
-    // transformBox: 'fill-box',
-    // transformOrigin: 'center',
-  },
-  slice: {
-    width: '500px',
-    height: '500px',
-    transformBox: 'fill-box',
-    transformOrigin: 'center',
+    width: '100%',
+    height: '100%',
   },
 });
 
 export default function CircleSVG() {
-  const classes = useStyles();
-  const diameter = 100;
-  const radius = diameter / 2;
-  const circumference = Math.PI * diameter;
-  const slicePercent = 100 / 12; // 12 slices
-  const gapPercent = 5;
-  const sliceDashArray = (slicePercent / 2) * (circumference / 100);
+  const backgroundColor = 'black';
+  const classes = useStyles({ backgroundColor });
+
+  const gap = 1;
+  let ringWidth = 10;
+  ringWidth -= gap;
+  const globalDiameter = 100 + ringWidth;
+  const globalRadius = globalDiameter / 2;
 
   const chordColors = [
     '#FF2300',
@@ -38,26 +35,63 @@ export default function CircleSVG() {
     '#3537FF',
     '#BA36E6',
     '#FF38CB',
-    'black',
+    'turquoise',
     'grey',
     'green',
     'aqua',
     'teal',
   ];
 
-  const slices = chordColors.map((color, index) => (
-    <circle
+  const ringParams = [
+    {
+      ringName: 'majorNumerals',
+      radius: 50,
+      ringWidth: ringWidth,
+      colors: chordColors,
+      zIndex: 11,
+      labels: ['Ⅴ', 'Ⅰ', 'Ⅳ'],
+    },
+    {
+      ringName: 'majorKeySigs',
+      radius: 40,
+      ringWidth: ringWidth,
+      colors: chordColors,
+      zIndex: 12,
+      // labels: keySigLabels,
+    },
+    {
+      ringName: 'minorKeySigs',
+      radius: 30,
+      ringWidth: ringWidth,
+      colors: chordColors,
+      zIndex: 13,
+      // labels: keySigLabels,
+    },
+    {
+      ringName: 'minorNumerals',
+      radius: 20,
+      ringWidth: ringWidth,
+      colors: chordColors,
+      zIndex: 14,
+      labels: ['ⅶ°', 'ⅲ', 'ⅵ', 'ⅱ'],
+    },
+    {
+      ringName: 'sharpsAndFlats',
+      radius: 10,
+      ringWidth: ringWidth,
+      colors: chordColors,
+      zIndex: 15,
+      // labels: keySigLabels,
+    },
+  ];
+
+  const rings = ringParams.map((ringParam, index) => (
+    <RingSVG
       key={index}
-      className={classes.slice}
-      r={radius / 2}
-      cx={radius}
-      cy={radius}
-      fill='bisque'
-      stroke={color}
-      strokeWidth={radius}
-      strokeDasharray={`${sliceDashArray} ${circumference}`}
-      transform={`rotate(${index * 30})`}
-      onClick={() => alert(index)}
+      ringParams={ringParam}
+      globalRadius={globalRadius}
+      gap={gap}
+      backgroundColor={backgroundColor}
     />
   ));
 
@@ -65,12 +99,11 @@ export default function CircleSVG() {
     <div className={classes.circleSVGRoot}>
       <svg
         className={classes.SVGViewbox}
-        height={diameter}
-        width={diameter}
-        viewBox={`0 0 ${diameter} ${diameter}`}
+        height={globalDiameter}
+        width={globalDiameter}
+        viewBox={`0 0 ${globalDiameter} ${globalDiameter}`}
       >
-        {/* <circle r={radius} cx={radius} cy={radius} fill='white' /> */}
-        {slices}
+        {rings}
       </svg>
     </div>
   );
