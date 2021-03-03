@@ -50,6 +50,24 @@ const KEY_SIGS_MINOR = [
   'c#',
 ];
 
+const SHARPS_FLATS = {
+  C: '0',
+  G: '1♯',
+  D: '2♯',
+  A: '3♯',
+  E: '4♯',
+  B: '5♯',
+  'F♯': '6♯',
+  'C♯': '7♯',
+  F: '1♭',
+  'B♭': '2♭',
+  'E♭': '3♭',
+  'A♭': '4♭',
+  'D♭': '5♭',
+  'G♭': '6♭',
+  'C♭': '7♭',
+};
+
 // Major colors from hooktheory, minor and mode colors are generated from this set.
 const chordColors = [
   '#FF2300',
@@ -60,7 +78,7 @@ const chordColors = [
   '#BA36E6',
   '#FF38CB',
 ];
-const defaultCircleColor = 'black';
+const baseColor = 'grey';
 
 const modeDictionary = {
   Primary: 1,
@@ -112,11 +130,17 @@ const circleColorMap = {
   5: 2,
   6: 6,
 };
-let CIRCLE_COLORS = [];
+let CIRCLE_COLORS = { outer: [], inner: [] };
 for (let i in chordColors) {
-  CIRCLE_COLORS.push(chordColors[circleColorMap[i]]);
+  if (i == 1 || i == 2 || i == 0) {
+    CIRCLE_COLORS.outer.push(chordColors[circleColorMap[i]]);
+  } else {
+    CIRCLE_COLORS.inner.push(chordColors[circleColorMap[i]]);
+  }
 }
-CIRCLE_COLORS.push(defaultCircleColor);
+console.log(Array(9).fill(baseColor));
+CIRCLE_COLORS.outer.concat(Array(9).fill(baseColor));
+CIRCLE_COLORS.outer.concat(Array(8).fill(baseColor));
 
 const DIAMETER = 500; // Overall circle diameter
 // Outer diameters of each ring and thickness
@@ -413,6 +437,7 @@ export {
   DIAMETER,
   MAJOR_ROMAN_NUMS,
   MINOR_ROMAN_NUMS,
+  SHARPS_FLATS,
   CIRCLE_COLORS,
   KEY_SIGS,
   KEY_SIGS_MAJOR,

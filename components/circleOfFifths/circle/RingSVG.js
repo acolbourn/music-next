@@ -14,7 +14,7 @@ export default function RingSVG({
   backgroundColor,
 }) {
   const classes = useStyles();
-  const { radius, colors, ringWidth } = ringParams;
+  const { radius, colors, ringWidth, labels } = ringParams;
   const circumference = 2 * Math.PI * radius;
   const strokeDashOffset = circumference - (1 / 12) * circumference;
   let angleOffset = -120;
@@ -54,7 +54,7 @@ export default function RingSVG({
           dy='3px'
           fill='white'
         >
-          {index}
+          {labels[index]}
         </text>
       </g>
     );
