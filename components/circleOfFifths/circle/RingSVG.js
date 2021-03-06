@@ -1,9 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
+import { calculateTextCoords } from './circleConstants.js';
+import RingGaps from './RingGaps';
 
 const useStyles = makeStyles({
   label: {
-    fontSize: '8px',
+    fontSize: '6px',
+  },
+  sharpsFlatslabel: {
+    fontSize: '4px',
   },
 });
 
@@ -14,27 +19,23 @@ export default function RingSVG({
   backgroundColor,
 }) {
   const classes = useStyles();
-  const { radius, colors, ringWidth, labels } = ringParams;
+  const { radius, colors, ringWidth, labels, ringName } = ringParams;
+
+  // Slice dimensions
   const circumference = 2 * Math.PI * radius;
   const strokeDashOffset = circumference - (1 / 12) * circumference;
   let angleOffset = -120;
+  const initRotation = 15;
 
-  const calculateTextCoords = (angleOffset) => {
-    const angle = ((1 / 12) * 360) / 2 + angleOffset;
-    const radians = angle * (Math.PI / 180);
-
-    const textCoords = {
-      x: radius * Math.cos(radians) + globalRadius,
-      y: radius * Math.sin(radians) + globalRadius,
-    };
-    return textCoords;
-  };
-
+  // Generate each slice of the ring with text label if needed
   const slices = colors.map((color, index) => {
     angleOffset += 30;
-    const textCoords = calculateTextCoords(angleOffset);
+    const textCoords = calculateTextCoords(angleOffset, radius, globalRadius);
     return (
-      <g key={index}>
+      <g
+        key={index}
+        transform={`rotate(-${initRotation}, ${globalRadius}, ${globalRadius})`}
+      >
         <circle
           cx={globalRadius}
           cy={globalRadius}
@@ -46,39 +47,26 @@ export default function RingSVG({
           strokeDashoffset={strokeDashOffset}
           transform={`rotate(${angleOffset}, ${globalRadius}, ${globalRadius})`}
         ></circle>
-        <text
-          className={classes.label}
-          x={textCoords.x}
-          y={textCoords.y}
-          textAnchor='middle'
-          dy='3px'
-          fill='white'
-        >
-          {labels[index]}
-        </text>
+        {labels[index] !== null && (
+          <text
+            className={
+              ringName === 'sharpsAndFlats'
+                ? classes.sharpsFlatslabel
+                : classes.label
+            }
+            x={textCoords.x}
+            y={textCoords.y}
+            textAnchor='middle'
+            dy='2px'
+            fill='white'
+            transform={`rotate(${initRotation}, ${textCoords.x}, ${textCoords.y})`}
+          >
+            {labels[index]}
+          </text>
+        )}
       </g>
     );
   });
-
-  // Create gaps between slices by using 6 lines across as a mask on top
-  const ringGaps = Array(6);
-  const rotAngle = 30;
-  const y1 = globalRadius - radius - ringWidth / 2;
-  const y2 = 2 * globalRadius - y1;
-  for (let i = 0; i < 6; i++) {
-    ringGaps[i] = (
-      <line
-        x1={globalRadius}
-        y1={y1}
-        x2={globalRadius}
-        y2={y2}
-        stroke={backgroundColor}
-        strokeWidth={gap}
-        transform={`rotate(${rotAngle * i}, ${globalRadius}, ${globalRadius})`}
-        key={i}
-      ></line>
-    );
-  }
 
   return (
     <motion.g
@@ -86,7 +74,12 @@ export default function RingSVG({
       transition={{ duration: radius === 40 ? 5 : 2 }}
     >
       {slices}
-      {ringGaps}
+      <RingGaps
+        globalRadius={globalRadius}
+        gap={gap}
+        backgroundColor={backgroundColor}
+        ringParams={ringParams}
+      />
     </motion.g>
   );
 }

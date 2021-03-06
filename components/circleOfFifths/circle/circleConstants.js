@@ -1,16 +1,16 @@
 const KEY_SIGS = [
-  { major: 'A', minor: 'f#', enharmMaj: null, enharmMin: null },
-  { major: 'D', minor: 'b', enharmMaj: null, enharmMin: null },
-  { major: 'G', minor: 'e', enharmMaj: null, enharmMin: null },
   { major: 'C', minor: 'a', enharmMaj: null, enharmMin: null },
-  { major: 'F', minor: 'd', enharmMaj: null, enharmMin: null },
-  { major: 'Bb', minor: 'g', enharmMaj: null, enharmMin: null },
-  { major: 'Eb', minor: 'c', enharmMaj: null, enharmMin: null },
-  { major: 'Ab', minor: 'f', enharmMaj: null, enharmMin: null },
-  { major: 'Db', minor: 'bb', enharmMaj: 'C#', enharmMin: 'a#' },
-  { major: 'F#', minor: 'd#', enharmMaj: 'Gb', enharmMin: 'eb' },
-  { major: 'B', minor: 'g#', enharmMaj: 'Cb', enharmMin: 'ab' },
+  { major: 'G', minor: 'e', enharmMaj: null, enharmMin: null },
+  { major: 'D', minor: 'b', enharmMaj: null, enharmMin: null },
+  { major: 'A', minor: 'f#', enharmMaj: null, enharmMin: null },
   { major: 'E', minor: 'c#', enharmMaj: null, enharmMin: null },
+  { major: 'B', minor: 'g#', enharmMaj: 'Cb', enharmMin: 'ab' },
+  { major: 'F#', minor: 'd#', enharmMaj: 'Gb', enharmMin: 'eb' },
+  { major: 'Db', minor: 'bb', enharmMaj: 'C#', enharmMin: 'a#' },
+  { major: 'Ab', minor: 'f', enharmMaj: null, enharmMin: null },
+  { major: 'Eb', minor: 'c', enharmMaj: null, enharmMin: null },
+  { major: 'Bb', minor: 'g', enharmMaj: null, enharmMin: null },
+  { major: 'F', minor: 'd', enharmMaj: null, enharmMin: null },
 ];
 
 // Major/Minor key sigs including enharmonics in easily searchable array
@@ -78,7 +78,7 @@ const chordColors = [
   '#BA36E6',
   '#FF38CB',
 ];
-const baseColor = 'grey';
+const baseColor = '#1D1D1D';
 
 const modeDictionary = {
   Primary: 1,
@@ -120,27 +120,33 @@ function getCardColors(modeRequest) {
   return colors;
 }
 
-// Map chord colors onto circle, all modes follow some order.
-const circleColorMap = {
-  0: 3,
-  1: 0,
-  2: 4,
-  3: 1,
-  4: 5,
-  5: 2,
-  6: 6,
+// Make arrays with default slice color
+const defaultColor = Array(12).fill(baseColor);
+let CIRCLE_COLORS = {
+  outer: [...defaultColor],
+  inner: [...defaultColor],
+  sharpsFlats: [...defaultColor],
 };
-let CIRCLE_COLORS = { outer: [], inner: [] };
-for (let i in chordColors) {
-  if (i == 1 || i == 2 || i == 0) {
-    CIRCLE_COLORS.outer.push(chordColors[circleColorMap[i]]);
-  } else {
-    CIRCLE_COLORS.inner.push(chordColors[circleColorMap[i]]);
+// Map chord colors onto circle
+for (let i = 0; i < 12; i++) {
+  switch (i) {
+    case 0:
+      CIRCLE_COLORS.outer[i] = chordColors[0];
+      CIRCLE_COLORS.inner[i] = chordColors[5];
+      break;
+    case 1:
+      CIRCLE_COLORS.outer[i] = chordColors[4];
+      CIRCLE_COLORS.inner[i] = chordColors[2];
+      break;
+    case 2:
+      CIRCLE_COLORS.inner[i] = chordColors[6];
+      break;
+    case 11:
+      CIRCLE_COLORS.outer[i] = chordColors[3];
+      CIRCLE_COLORS.inner[i] = chordColors[1];
+      break;
   }
 }
-console.log(Array(9).fill(baseColor));
-CIRCLE_COLORS.outer.concat(Array(9).fill(baseColor));
-CIRCLE_COLORS.outer.concat(Array(8).fill(baseColor));
 
 const DIAMETER = 500; // Overall circle diameter
 // Outer diameters of each ring and thickness
@@ -226,6 +232,23 @@ const getCoords = (outerDiameter, thickness) => {
     coords.push(getSingleCoord((Math.PI / 6) * i, textRadius, centerPos));
   }
   return coords;
+};
+
+/**
+ * Calculate text coordinates.
+ * @param {number} angleOffset Rotation around circle in degrees.
+ * @param {number} radius Ring radius.
+ * @param {number} globalRadius Radius of entire circle.
+ * @returns {object} X and Y coordinates of text.
+ */
+const calculateTextCoords = (angleOffset, radius, globalRadius) => {
+  const angle = ((1 / 12) * 360) / 2 + angleOffset;
+  const radians = angle * (Math.PI / 180);
+  const textCoords = {
+    x: radius * Math.cos(radians) + globalRadius,
+    y: radius * Math.sin(radians) + globalRadius,
+  };
+  return textCoords;
 };
 
 /**
@@ -434,6 +457,7 @@ export {
   replaceFlatsSharps,
   formatScaleLabel,
   getCardColors,
+  calculateTextCoords,
   DIAMETER,
   MAJOR_ROMAN_NUMS,
   MINOR_ROMAN_NUMS,

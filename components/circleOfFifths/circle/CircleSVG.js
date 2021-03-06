@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ScaleContext } from '../contexts/scaleContext';
 import {
   CIRCLE_COLORS,
-  DIAMETER,
   SHARPS_FLATS,
   KEY_SIGS,
   detectEnharmonic,
@@ -35,7 +34,7 @@ export default function CircleSVG() {
   const { scale } = useContext(ScaleContext);
 
   // Circle layout dimensions
-  const gap = 1;
+  const gap = 0.2;
   let ringWidth = 10;
   ringWidth -= gap;
   const globalDiameter = 100 + ringWidth;
@@ -79,22 +78,6 @@ export default function CircleSVG() {
     return { major, minor, sharpsFlats };
   }, [labelReplacement]);
 
-  // const tempColors = [
-  //   '#FF2300',
-  //   '#FFAF00',
-  //   '#F3E200',
-  //   '#00CE00',
-  //   '#3537FF',
-  //   '#BA36E6',
-  //   '#FF38CB',
-  //   'turquoise',
-  //   'grey',
-  //   'green',
-  //   'aqua',
-  //   'teal',
-  // ];
-
-  console.log(CIRCLE_COLORS);
   const ringParams = [
     {
       ringName: 'majorNumerals',
@@ -102,8 +85,20 @@ export default function CircleSVG() {
       ringWidth: ringWidth,
       colors: CIRCLE_COLORS.outer,
       zIndex: 11,
-      // labels: ['Ⅴ', 'Ⅰ', 'Ⅳ'],
-      labels: keySigLabels,
+      labels: [
+        'Ⅰ',
+        'Ⅴ',
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        'Ⅳ',
+      ],
     },
     {
       ringName: 'majorKeySigs',
@@ -127,14 +122,26 @@ export default function CircleSVG() {
       ringWidth: ringWidth,
       colors: CIRCLE_COLORS.inner,
       zIndex: 14,
-      // labels: ['ⅶ°', 'ⅲ', 'ⅵ', 'ⅱ'],
-      labels: keySigLabels,
+      labels: [
+        'ⅵ',
+        'ⅲ',
+        'ⅶ°',
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        'ⅱ',
+      ],
     },
     {
       ringName: 'sharpsAndFlats',
       radius: 10,
       ringWidth: ringWidth,
-      colors: CIRCLE_COLORS.outer,
+      colors: CIRCLE_COLORS.sharpsFlats,
       zIndex: 15,
       labels: keySigLabels.sharpsFlats,
     },
