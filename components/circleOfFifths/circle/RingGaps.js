@@ -26,9 +26,5 @@ export default function RingGaps({
     );
   }
 
-  return (
-    <g transform={`rotate(-15, ${globalRadius}, ${globalRadius})`}>
-      {ringGaps}
-    </g>
-  );
+  return <g>{ringGaps}</g>;
 }

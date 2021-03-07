@@ -204,7 +204,7 @@ const ROMAN_RING_POSITIONS = [
 ];
 
 // Global animation speed of framer-motion effects in seconds.
-const ANIMATION_TIME = 2;
+const ANIMATION_TIME = 3;
 
 // Calculate x and y coordinates for single item on circle
 const getSingleCoord = (theta, radius, center) => {
