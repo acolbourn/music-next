@@ -8,7 +8,7 @@ import {
   detectEnharmonic,
   replaceFlatsSharps,
 } from './circleConstants';
-import RingSVG from './RingSVG';
+import RingRotations from './RingRotations';
 
 const useStyles = makeStyles({
   circleSVGRoot: ({ backgroundColor }) => ({
@@ -99,6 +99,7 @@ export default function CircleSVG() {
         null,
         'Ⅳ',
       ],
+      static: false,
     },
     {
       ringName: 'majorKeySigs',
@@ -107,6 +108,7 @@ export default function CircleSVG() {
       colors: CIRCLE_COLORS.outer,
       zIndex: 12,
       labels: keySigLabels.major,
+      static: true,
     },
     {
       ringName: 'minorKeySigs',
@@ -115,6 +117,7 @@ export default function CircleSVG() {
       colors: CIRCLE_COLORS.inner,
       zIndex: 13,
       labels: keySigLabels.minor,
+      static: true,
     },
     {
       ringName: 'minorNumerals',
@@ -136,6 +139,7 @@ export default function CircleSVG() {
         null,
         'ⅱ',
       ],
+      static: false,
     },
     {
       ringName: 'sharpsAndFlats',
@@ -144,18 +148,18 @@ export default function CircleSVG() {
       colors: CIRCLE_COLORS.sharpsFlats,
       zIndex: 15,
       labels: keySigLabels.sharpsFlats,
+      static: true,
+    },
+    {
+      ringName: 'majorClickHandler',
+      radius: 40,
+      ringWidth: ringWidth * 2,
+      colors: CIRCLE_COLORS.sharpsFlats,
+      zIndex: 16,
+      labels: null,
+      static: true,
     },
   ];
-
-  const rings = ringParams.map((ringParam, index) => (
-    <RingSVG
-      key={index}
-      ringParams={ringParam}
-      globalRadius={globalRadius}
-      gap={gap}
-      backgroundColor={backgroundColor}
-    />
-  ));
 
   return (
     <div className={classes.circleSVGRoot}>
@@ -165,7 +169,12 @@ export default function CircleSVG() {
         width={globalDiameter}
         viewBox={`0 0 ${globalDiameter} ${globalDiameter}`}
       >
-        {rings}
+        <RingRotations
+          ringParams={ringParams}
+          globalRadius={globalRadius}
+          gap={gap}
+          backgroundColor={backgroundColor}
+        />
       </svg>
     </div>
   );

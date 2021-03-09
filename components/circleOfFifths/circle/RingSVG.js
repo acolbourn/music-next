@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import { calculateTextCoords, ANIMATION_TIME } from './circleConstants.js';
@@ -11,9 +10,6 @@ const useStyles = makeStyles({
   sharpsFlatslabel: {
     fontSize: '4px',
   },
-  test: {
-    fontSize: '10px',
-  },
 });
 
 export default function RingSVG({
@@ -21,22 +17,20 @@ export default function RingSVG({
   globalRadius,
   gap,
   backgroundColor,
+  handleClick,
+  rotation,
 }) {
   const classes = useStyles();
   const { radius, colors, ringWidth, labels, ringName } = ringParams;
-  const [rotation, setRotation] = useState(0);
+  console.log(`${ringName} rendered`);
 
   // Slice dimensions
   const circumference = 2 * Math.PI * radius;
   const strokeDashOffset = circumference - (1 / 12) * circumference;
   let angleOffset = -120;
   // IMPORTANT NOTE: There is a bug when animating horizontal SVG text that causes a glitchy/jittery effect.  Keeping text rotated slightly off of horizontal is a workaround.  Stack overflow believes this is caused by a rounding error with text jumping to the next point in rounded increments when horizontal.
-  const initRotation = 0.05;
-
-  function handleClick(e) {
-    console.log(e);
-    setRotation(rotation + 90);
-  }
+  const rotationOffset = 0.05;
+  const initRotation = 15;
 
   // Generate each slice of the ring and text if needed
   let slices = [];
@@ -47,6 +41,7 @@ export default function RingSVG({
     const slice = (
       <circle
         key={index}
+        name={`${ringName}-${index}-${color}`}
         onClick={handleClick}
         cx={globalRadius}
         cy={globalRadius}
@@ -61,17 +56,17 @@ export default function RingSVG({
     );
     slices.push(slice);
     let label = null;
-    if (labels[index] !== null) {
+    if (labels !== null && labels[index] !== null) {
       label = (
         <motion.text
           key={labels[index]}
-          // style={{
-          //   originX: `${globalRadius}px`,
-          //   originY: `${globalRadius}px`,
-          // }}
-          initial={{ x: textCoords.x, y: textCoords.y }}
+          initial={{
+            x: textCoords.x,
+            y: textCoords.y,
+            rotate: initRotation + rotationOffset,
+          }}
           animate={{
-            rotate: initRotation - rotation,
+            rotate: initRotation - rotation + rotationOffset,
           }}
           transition={{ duration: ANIMATION_TIME }}
           className={
@@ -79,12 +74,9 @@ export default function RingSVG({
               ? classes.sharpsFlatslabel
               : classes.label
           }
-          // x={textCoords.x}
-          // y={textCoords.y}
           textAnchor='middle'
           dy='2px'
           fill='white'
-          // transform={`rotate(${initRotation}, ${textCoords.x}, ${textCoords.y})`}
         >
           {labels[index]}
         </motion.text>
@@ -94,7 +86,6 @@ export default function RingSVG({
   });
 
   return (
-    // <g transform={`rotate(-${initRotation}, ${globalRadius}, ${globalRadius})`}>
     <motion.g
       style={{
         originX: `${globalRadius}px`,
@@ -105,41 +96,12 @@ export default function RingSVG({
     >
       {slices}
       {textLabels}
-      {/* <g
-        transform={`rotate(-${initRotation}, ${globalRadius}, ${globalRadius})`}
-      >
-        {slices}
-        {textLabels}
-      </g> */}
-
       <RingGaps
         globalRadius={globalRadius}
         gap={gap}
         backgroundColor={backgroundColor}
         ringParams={ringParams}
       />
-      {/* <motion.text
-        // style={{
-        //   originX: `${globalRadius}px`,
-        //   originY: `${globalRadius}px`,
-        // }}
-        onClick={handleClick}
-        initial={{ x: 100, y: 100 }}
-        animate={{
-          rotate: initRotation - rotation,
-        }}
-        transition={{ duration: ANIMATION_TIME }}
-        className={classes.test}
-        // x={textCoords.x}
-        // y={textCoords.y}
-        textAnchor='middle'
-        dy='2px'
-        fill='white'
-        // transform={`rotate(${initRotation}, ${textCoords.x}, ${textCoords.y})`}
-      >
-        Ⅶ
-      </motion.text> */}
     </motion.g>
-    // </g>
   );
 }
