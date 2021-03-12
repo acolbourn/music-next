@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useContext } from 'react';
+import { ScaleContext } from '../contexts/scaleContext';
 import RingSVG from './RingSVG';
 
 export default function RingRotations({
@@ -7,11 +8,54 @@ export default function RingRotations({
   gap,
   backgroundColor,
 }) {
+  const { setScale } = useContext(ScaleContext);
   const [rotation, setRotation] = useState(0);
 
+  // Maps slice indexes to key signatures
+  const majorKeyDictionary = [
+    'C',
+    'G',
+    'D',
+    'A',
+    'E',
+    'B',
+    'F#',
+    'Db',
+    'Ab',
+    'Eb',
+    'Bb',
+    'F',
+  ];
+  const minorKeyDictionary = [
+    'a',
+    'e',
+    'b',
+    'f#',
+    'c#',
+    'g#',
+    'd#',
+    'bb',
+    'f',
+    'c',
+    'g',
+    'd',
+  ];
+
   function handleClick(e) {
-    console.log(e.target.getAttribute('name'));
-    setRotation(rotation + 90);
+    const clickedSlice = e.target.getAttribute('name').split('-');
+    const ringTitle = clickedSlice[0];
+    const sliceIndex = clickedSlice[1];
+    console.log(ringTitle, sliceIndex);
+    const newRotation = sliceIndex * 30;
+    setRotation(newRotation);
+
+    // Set global scale context
+    if (ringTitle === 'majorClickHandler') {
+      setScale({ root: majorKeyDictionary[sliceIndex], type: 'major' });
+    } else if (ringTitle === 'minorClickHandler') {
+      // setScale({ root: minorKeyDictionary[sliceIndex], type: 'minor' });
+      console.log(minorKeyDictionary[sliceIndex]);
+    }
   }
 
   // Divide rings into 2 groups, static and dynamic

@@ -122,10 +122,12 @@ function getCardColors(modeRequest) {
 
 // Make arrays with default slice color
 const defaultColor = Array(12).fill(baseColor);
+const transparent = Array(12).fill('rgba(0,0,255,0)');
 let CIRCLE_COLORS = {
   outer: [...defaultColor],
   inner: [...defaultColor],
   sharpsFlats: [...defaultColor],
+  transparent: [...transparent],
 };
 // Map chord colors onto circle
 for (let i = 0; i < 12; i++) {

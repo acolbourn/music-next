@@ -31,30 +31,35 @@ export default function RingSVG({
   // IMPORTANT NOTE: There is a bug when animating horizontal SVG text that causes a glitchy/jittery effect.  Keeping text rotated slightly off of horizontal is a workaround.  Stack overflow believes this is caused by a rounding error with text jumping to the next point in rounded increments when horizontal.
   const rotationOffset = 0.05;
   const initRotation = 15;
-
   // Generate each slice of the ring and text if needed
   let slices = [];
   let textLabels = [];
   colors.forEach((color, index) => {
     angleOffset += 30;
     const textCoords = calculateTextCoords(angleOffset, radius, globalRadius);
-    const slice = (
-      <circle
-        key={index}
-        name={`${ringName}-${index}-${color}`}
-        onClick={handleClick}
-        cx={globalRadius}
-        cy={globalRadius}
-        r={radius}
-        fill='transparent'
-        stroke={color}
-        strokeWidth={ringWidth}
-        strokeDasharray={circumference}
-        strokeDashoffset={strokeDashOffset}
-        transform={`rotate(${angleOffset}, ${globalRadius}, ${globalRadius})`}
-      ></circle>
-    );
-    slices.push(slice);
+    let slice = null;
+    if (ringName !== 'minorKeySigLabels' && ringName !== 'majorKeySigLabels') {
+      slice = (
+        <circle
+          key={index}
+          name={`${ringName}-${index}`}
+          onClick={handleClick}
+          cx={globalRadius}
+          cy={globalRadius}
+          r={radius}
+          fill='transparent'
+          cursor={ringName === 'sharpsAndFlats' ? 'default' : 'pointer'}
+          pointerEvents='stroke'
+          stroke={color}
+          strokeWidth={ringWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashOffset}
+          transform={`rotate(${angleOffset}, ${globalRadius}, ${globalRadius})`}
+        ></circle>
+      );
+      slices.push(slice);
+    }
+
     let label = null;
     if (labels !== null && labels[index] !== null) {
       label = (
@@ -77,6 +82,7 @@ export default function RingSVG({
           textAnchor='middle'
           dy='2px'
           fill='white'
+          cursor='default'
         >
           {labels[index]}
         </motion.text>
@@ -85,23 +91,48 @@ export default function RingSVG({
     }
   });
 
-  return (
-    <motion.g
-      style={{
-        originX: `${globalRadius}px`,
-        originY: `${globalRadius}px`,
-      }}
-      animate={{ rotate: rotation }}
-      transition={{ duration: ANIMATION_TIME }}
-    >
-      {slices}
-      {textLabels}
+  let ringGaps;
+  if (ringName !== 'majorClickHandler' && ringName !== 'minorClickHandler') {
+    ringGaps = (
       <RingGaps
         globalRadius={globalRadius}
         gap={gap}
         backgroundColor={backgroundColor}
         ringParams={ringParams}
       />
-    </motion.g>
-  );
+    );
+  }
+
+  let ringMarkup = null;
+  if (ringName === 'minorKeySigLabels' || ringName === 'majorKeySigLabels') {
+    ringMarkup = (
+      <motion.g
+        style={{
+          originX: `${globalRadius}px`,
+          originY: `${globalRadius}px`,
+        }}
+        animate={{ rotate: rotation + rotationOffset }}
+        transition={{ duration: ANIMATION_TIME }}
+      >
+        {textLabels}
+      </motion.g>
+    );
+  } else {
+    ringMarkup = (
+      <motion.g
+        style={{
+          originX: `${globalRadius}px`,
+          originY: `${globalRadius}px`,
+        }}
+        animate={{ rotate: rotation + rotationOffset }}
+        transition={{ duration: ANIMATION_TIME }}
+      >
+        {slices}
+        {textLabels}
+        {ringGaps}
+      </motion.g>
+    );
+  }
+
+  return <>{ringMarkup}</>;
 }
