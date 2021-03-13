@@ -23,6 +23,8 @@ export default function RingSVG({
   const classes = useStyles();
   const { radius, colors, ringWidth, labels, ringName } = ringParams;
   console.log(`${ringName} rendered`);
+  let currentRotation = 0;
+  if (rotation.hasOwnProperty(ringName)) currentRotation = rotation[ringName];
 
   // Slice dimensions
   const circumference = 2 * Math.PI * radius;
@@ -43,7 +45,11 @@ export default function RingSVG({
         <circle
           key={index}
           name={`${ringName}-${index}`}
-          onClick={handleClick}
+          onClick={
+            ringName === 'majorClickHandler' || ringName === 'minorClickHandler'
+              ? handleClick
+              : null
+          }
           cx={globalRadius}
           cy={globalRadius}
           r={radius}
@@ -71,7 +77,7 @@ export default function RingSVG({
             rotate: initRotation + rotationOffset,
           }}
           animate={{
-            rotate: initRotation - rotation + rotationOffset,
+            rotate: initRotation - currentRotation + rotationOffset,
           }}
           transition={{ duration: ANIMATION_TIME }}
           className={
@@ -111,7 +117,7 @@ export default function RingSVG({
           originX: `${globalRadius}px`,
           originY: `${globalRadius}px`,
         }}
-        animate={{ rotate: rotation + rotationOffset }}
+        animate={{ rotate: currentRotation + rotationOffset }}
         transition={{ duration: ANIMATION_TIME }}
       >
         {textLabels}
@@ -124,7 +130,7 @@ export default function RingSVG({
           originX: `${globalRadius}px`,
           originY: `${globalRadius}px`,
         }}
-        animate={{ rotate: rotation + rotationOffset }}
+        animate={{ rotate: currentRotation + rotationOffset }}
         transition={{ duration: ANIMATION_TIME }}
       >
         {slices}
