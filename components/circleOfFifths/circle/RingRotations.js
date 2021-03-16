@@ -57,13 +57,6 @@ export default function RingRotations({
     setRotation((prevState) => {
       // Determine closest spin direction of outer ring
       const targetAngle = sliceIndex * 30;
-      // let outerRotation = targetAngle;
-      // console.log(Math.abs(outerRotation - prevState.majorNumerals));
-      // if (Math.abs(outerRotation - prevState.majorNumerals) > 180) {
-      //   outerSpinsClockwise = false;
-      //   outerRotation += spinLeft;
-      // }
-
       // Check rotation distance between current and selected key signature, if greater than 180 degrees, flip rotation direction
       let outerRotation = targetAngle;
       if (Math.abs(targetAngle - prevState.majorNumerals > 180)) {
@@ -77,72 +70,46 @@ export default function RingRotations({
       }
       console.log(outerRingSpin);
 
+      // function getRotation(ringID){
+
       // Rotation determined by following equation:
       // new rotation = new key rotation - old key rotation +  previous rotation + spinDirection (spin solved in next step)
       let majorKeyRot =
         targetAngle - prevState.majorNumerals + prevState.majorKeySigSlices;
 
-      // Calculate expected default spin direction of framer motion
-      let expectedMajorSpin = 'right';
-      if (majorKeyRot - prevState.majorKeySigSlices < 0) {
-        expectedMajorSpin = 'left';
-      }
-      // if (targetAngle - prevState.majorKeySigSlices < 0) {
-      //   expectedMajorSpin = 'left';
-      // }
       console.log(
-        targetAngle,
-        prevState.majorKeySigSlices,
-        targetAngle - prevState.majorKeySigSlices,
-        expectedMajorSpin
+        `target: ${targetAngle} - prev numerals: ${prevState.majorNumerals} + prev keySlices: ${prevState.majorKeySigSlices} = ${majorKeyRot}`
       );
+
       // Spin opposite of outer ring
-      if (expectedMajorSpin === outerRingSpin) {
+      // Calculate expected default spin direction
+      let expectedMajorSpin = 'right';
+      if (majorKeyRot - prevState.majorKeySigSlices < 0)
+        expectedMajorSpin = 'left';
+      else expectedMajorSpin = 'right';
+
+      while (expectedMajorSpin === outerRingSpin) {
         if (outerRingSpin === 'left') {
           majorKeyRot += spinRight;
         } else if (outerRingSpin === 'right') {
           majorKeyRot += spinLeft;
         }
+
+        if (majorKeyRot - prevState.majorKeySigSlices < 0)
+          expectedMajorSpin = 'left';
+        else expectedMajorSpin = 'right';
       }
 
-      // Spin inner rings based on outer ring
-      // let majorKeyRot = prevState.majorKeySigSlices;
-      // if (outerSpinsClockwise) {
-      //   majorKeyRot += targetAngle;
-      //   majorKeyRot -= 360;
-      // } else {
-      //   majorKeyRot -= targetAngle;
-      //   majorKeyRot += 360;
-      // }
-      // let majorKeyRot =
-      //   targetAngle - prevState.majorNumerals + prevState.majorKeySigSlices;
-      // let spinDirection = spinRight;
-      // if (outerSpinsClockwise) spinDirection = spinLeft;
-      // console.log(outerSpinsClockwise, spinDirection);
-      // majorKeyRot += spinDirection;
-
-      // Rotation determined by following equation:
-      // new rotation = new key rotation - old key rotation +  previous rotation + spinDirection (spin solved in next step)
-      // let majorKeyRot =
-      //   selectedKeySig.rotation - prevKeySig.rotation + prevRotationRef.current;
-
-      // // Calculate expected default spin direction of framer motion
-      // let expectedSpinDir = 'right';
-      // if (selectedKeySig.rotation - prevKeySig.rotation < 0) {
-      //   expectedSpinDir = 'left';
-      // }
-      // // Spin opposite of color wheel
-      // let spinDirection = 0;
-      // // if expected spin === color wheel spin, flip direction
-      // if (expectedSpinDir === keySig.rotationDirection) {
-      //   if (keySig.rotationDirection === 'left') {
-      //     spinDirection = spinRight;
-      //   } else if (keySig.rotationDirection === 'right') {
-      //     spinDirection = spinLeft;
-      //   }
+      // // Make inner rings spin two loops
+      // if (outerRingSpin === 'left') {
+      //   innerRing += spinRight;
+      //   minorKeyRot += spinLeft;
+      // } else if (outerRingSpin === 'right') {
+      //   innerRing += spinLeft;
+      //   minorKeyRot += spinRight;
       // }
 
-      // majorKeyRot += spinDirection;
+      console.log(`expected: ${expectedMajorSpin}, = ${majorKeyRot}`);
 
       const newRotations = {
         majorNumerals: outerRotation,
