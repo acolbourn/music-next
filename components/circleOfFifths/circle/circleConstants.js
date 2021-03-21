@@ -151,90 +151,9 @@ for (let i = 0; i < 12; i++) {
 }
 
 const DIAMETER = 500; // Overall circle diameter
-// Outer diameters of each ring and thickness
-const RING_DIMENSIONS = {
-  thickness: 50, // (100/2 = 50 to account for 2 sides of circle)
-  outerDiameters: [100, 200, 300, 400, 500],
-};
-// Z indexes of each ring of circle
-const Z_INDEXES = {
-  romanRing: 5,
-  colorWheel: 10,
-};
-
-const SYMBOLS = {
-  flat: '♭',
-  sharp: '♯',
-  diminished: '°',
-  augmented: '+',
-  halfDiminished: 'ø',
-  major1: 'Ⅰ',
-  major2: 'Ⅱ',
-  major3: 'Ⅲ',
-  major4: 'Ⅳ',
-  major5: 'Ⅴ',
-  major6: 'Ⅵ',
-  major7: 'Ⅶ',
-  minor1: 'ⅰ',
-  minor2: 'ⅱ',
-  minor3: 'ⅲ',
-  minor4: 'ⅳ',
-  minor5: 'ⅴ',
-  minor6: 'ⅵ',
-  minor7: 'ⅶ',
-};
-
-const MAJOR_ROMAN_NUMS = ['ⅶ°', 'ⅲ', 'ⅵ', 'ⅱ', 'Ⅴ', 'Ⅰ', 'Ⅳ'];
-const MINOR_ROMAN_NUMS = ['ⅱ°', 'ⅴ', 'ⅰ', 'ⅳ', 'Ⅶ', 'Ⅲ', 'Ⅵ'];
-// const MAJOR_ROMAN_NUMS = ['vii°', 'iii', 'vi', 'ii', 'V', 'I', 'IV'];
-// const MINOR_ROMAN_NUMS = ['ii°', 'v', 'i', 'iv', 'VII', 'III', 'VI'];
-
-// Key signature to rotation dictionary
-const ROMAN_RING_POSITIONS = [
-  { keySignature: 'A', rotation: 90 },
-  { keySignature: 'D', rotation: 60 },
-  { keySignature: 'G', rotation: 30 },
-  { keySignature: 'C', rotation: 0 },
-  { keySignature: 'F', rotation: 330 },
-  { keySignature: 'Bb', rotation: 300 },
-  { keySignature: 'Eb', rotation: 270 },
-  { keySignature: 'Ab', rotation: 240 },
-  { keySignature: 'Db', rotation: 210 },
-  { keySignature: 'F#', rotation: 180 },
-  { keySignature: 'B', rotation: 150 },
-  { keySignature: 'E', rotation: 120 },
-];
 
 // Global animation speed of framer-motion effects in seconds.
 const ANIMATION_TIME = 3;
-
-// Calculate x and y coordinates for single item on circle
-const getSingleCoord = (theta, radius, center) => {
-  return {
-    left: Math.cos(theta) * radius + center.x,
-    top: -Math.sin(theta) * radius + center.y,
-  };
-};
-
-/**
- * Calculate x and y coordinates for each label on a ring.
- * @param {number} outerDiameter Ring outer diameter.
- * @param {*} thickness Ring thickness.
- * @returns {array} Array of coordinates for all labels on ring.
- */
-const getCoords = (outerDiameter, thickness) => {
-  const radius = outerDiameter / 2;
-  const innerRadius = radius - thickness / 2;
-  const textRadius = (radius + innerRadius) / 2;
-  const globalRadius = DIAMETER / 2;
-  const centerPos = { x: globalRadius, y: globalRadius };
-
-  let coords = [];
-  for (let i = 0; i < 12; i++) {
-    coords.push(getSingleCoord((Math.PI / 6) * i, textRadius, centerPos));
-  }
-  return coords;
-};
 
 /**
  * Calculate text coordinates.
@@ -429,11 +348,11 @@ const replaceFlatsSharps = (label) => {
   // Replace b with flat symbol, skip 1st letter in case key is b
   let newLabel = label.slice(1);
   while (newLabel.includes('b')) {
-    newLabel = newLabel.replace('b', SYMBOLS.flat);
+    newLabel = newLabel.replace('b', '♭');
   }
   // Replace sharps
   while (newLabel.includes('#')) {
-    newLabel = newLabel.replace('#', SYMBOLS.sharp);
+    newLabel = newLabel.replace('#', '♯');
   }
 
   return label[0] + newLabel;
@@ -451,8 +370,74 @@ const formatScaleLabel = (scale) => {
   return `${scaleLetter} ${scaleType} Scale`;
 };
 
+/**
+ * Get random integer.
+ * @param {number} max  Max integer value.
+ * @returns Random integer from 0 to max.
+ */
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+/**
+ * Calculates ring rotation relative to outer ring.
+ * @param {string} ringID Ring name.
+ * @param {boolean} spinOpposite True spins opposite outer ring, false spins with.
+ * @param {number} extraSpins Extra spins.
+ * @param {number} targetAngle Angle of desired key signature.
+ * @param {object} prevState Previous rotation states of all rings.
+ * @param {string} outerRingSpin Expected spin direction of outer ring.
+ * @returns New ring rotation.
+ */
+function getRingRotation(
+  ringID,
+  spinOpposite,
+  extraSpins,
+  targetAngle,
+  prevState,
+  outerRingSpin
+) {
+  const spinLeft = -360;
+  const spinRight = 360;
+  // Rotation determined by following equation:
+  // new rotation = new target rotation - old target rotation +  current rotation + spinDirection (spin solved in next step)
+  let newRotation = targetAngle - prevState.majorNumerals + prevState[ringID];
+  // Calculate expected default spin direction
+  let expectedSpin = 'right';
+  if (newRotation - prevState[ringID] < 0) expectedSpin = 'left';
+  else expectedSpin = 'right';
+  // Spin opposite or with outer ring as specified
+  if (spinOpposite) {
+    while (expectedSpin === outerRingSpin) {
+      if (outerRingSpin === 'left') newRotation += spinRight;
+      else if (outerRingSpin === 'right') newRotation += spinLeft;
+      if (newRotation - prevState[ringID] < 0) expectedSpin = 'left';
+      else expectedSpin = 'right';
+    }
+  } else {
+    while (expectedSpin !== outerRingSpin) {
+      if (outerRingSpin === 'left') newRotation += spinLeft;
+      else if (outerRingSpin === 'right') newRotation += spinRight;
+      if (newRotation - prevState[ringID] < 0) expectedSpin = 'left';
+      else expectedSpin = 'right';
+    }
+  }
+  // Add extra spins if specified
+  let spinCount = 0;
+  while (spinCount < extraSpins) {
+    if (!spinOpposite) {
+      if (outerRingSpin === 'left') newRotation += spinLeft;
+      else if (outerRingSpin === 'right') newRotation += spinRight;
+    } else {
+      if (outerRingSpin === 'left') newRotation += spinRight;
+      else if (outerRingSpin === 'right') newRotation += spinLeft;
+    }
+    spinCount++;
+  }
+  return newRotation;
+}
+
 export {
-  getCoords,
   validateRoute,
   detectEnharmonic,
   getRelatedKeys,
@@ -460,17 +445,13 @@ export {
   formatScaleLabel,
   getCardColors,
   calculateTextCoords,
+  getRandomInt,
+  getRingRotation,
   DIAMETER,
-  MAJOR_ROMAN_NUMS,
-  MINOR_ROMAN_NUMS,
   SHARPS_FLATS,
   CIRCLE_COLORS,
   KEY_SIGS,
   KEY_SIGS_MAJOR,
   KEY_SIGS_MINOR,
-  Z_INDEXES,
-  RING_DIMENSIONS,
-  ROMAN_RING_POSITIONS,
   ANIMATION_TIME,
-  SYMBOLS,
 };

@@ -1,44 +1,144 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { DIAMETER } from './circleConstants';
-import Wheel from './Wheel';
-import Labels from './Labels';
+import { motion } from 'framer-motion';
+import { calculateTextCoords, ANIMATION_TIME } from './circleConstants.js';
+import RingGaps from './RingGaps';
 
 const useStyles = makeStyles({
-  ringRoot: {
-    // width: DIAMETER,
-    // height: DIAMETER,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: DIAMETER,
-    height: DIAMETER,
-    // display: 'grid',
+  label: {
+    fontSize: '6px',
   },
-  wheelLabelStack: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: DIAMETER,
-    height: DIAMETER,
-    // gridArea: '1 / 1 / 2 / 2',
-    // display: 'flex',
-    // justifyContent: 'center',
-    // alignItems: 'center',
+  sharpsFlatslabel: {
+    fontSize: '4px',
   },
 });
 
-export default function Ring({ ringParams }) {
+export default function Ring({
+  ringParams,
+  globalRadius,
+  gap,
+  backgroundColor,
+  handleClick,
+  rotation,
+}) {
   const classes = useStyles();
-  const { outerDiameter, thickness, colors, ringName, labels } = ringParams;
+  const { radius, colors, ringWidth, labels, ringName } = ringParams;
+  console.log(`${ringName} rendered`);
+  let currentRotation = 0;
+  if (rotation.hasOwnProperty(ringName)) currentRotation = rotation[ringName];
 
-  return (
-    <div className={classes.ringRoot}>
-      <div className={classes.wheelLabelStack}>
-        <Wheel ringParams={ringParams} />
-      </div>
-      {/* <div className={classes.wheelLabelStack}>
-        <Labels ringParams={ringParams} />
-      </div> */}
-    </div>
-  );
+  // Slice dimensions
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashOffset = circumference - (1 / 12) * circumference;
+  let angleOffset = -120;
+  // IMPORTANT NOTE: There is a bug when animating horizontal SVG text that causes a glitchy/jittery effect.  Keeping text rotated slightly off of horizontal is a workaround.  Stack overflow believes this is caused by a rounding error with text jumping to the next point in rounded increments when horizontal.
+  const rotationOffset = 0.05;
+  const initRotation = 15;
+  // Generate each slice of the ring and text if needed
+  let slices = [];
+  let textLabels = [];
+  colors.forEach((color, index) => {
+    angleOffset += 30;
+    const textCoords = calculateTextCoords(angleOffset, radius, globalRadius);
+    let slice = null;
+    if (ringName !== 'minorKeySigLabels' && ringName !== 'majorKeySigLabels') {
+      slice = (
+        <circle
+          key={index}
+          name={`${ringName}-${index}`}
+          onClick={
+            ringName === 'majorClickHandler' || ringName === 'minorClickHandler'
+              ? handleClick
+              : null
+          }
+          cx={globalRadius}
+          cy={globalRadius}
+          r={radius}
+          fill='transparent'
+          cursor={ringName === 'sharpsAndFlats' ? 'default' : 'pointer'}
+          pointerEvents='stroke'
+          stroke={color}
+          strokeWidth={ringWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashOffset}
+          transform={`rotate(${angleOffset}, ${globalRadius}, ${globalRadius})`}
+        ></circle>
+      );
+      slices.push(slice);
+    }
+
+    let label = null;
+    if (labels !== null && labels[index] !== null) {
+      label = (
+        <motion.text
+          key={labels[index]}
+          initial={{
+            x: textCoords.x,
+            y: textCoords.y,
+            rotate: initRotation + rotationOffset,
+          }}
+          animate={{
+            rotate: initRotation - currentRotation + rotationOffset,
+          }}
+          transition={{ duration: ANIMATION_TIME }}
+          className={
+            ringName === 'sharpsAndFlats'
+              ? classes.sharpsFlatslabel
+              : classes.label
+          }
+          textAnchor='middle'
+          dy='2px'
+          fill='white'
+          cursor='default'
+        >
+          {labels[index]}
+        </motion.text>
+      );
+      textLabels.push(label);
+    }
+  });
+
+  let ringGaps;
+  if (ringName !== 'majorClickHandler' && ringName !== 'minorClickHandler') {
+    ringGaps = (
+      <RingGaps
+        globalRadius={globalRadius}
+        gap={gap}
+        backgroundColor={backgroundColor}
+        ringParams={ringParams}
+      />
+    );
+  }
+
+  let ringMarkup = null;
+  if (ringName === 'minorKeySigLabels' || ringName === 'majorKeySigLabels') {
+    ringMarkup = (
+      <motion.g
+        style={{
+          originX: `${globalRadius}px`,
+          originY: `${globalRadius}px`,
+        }}
+        animate={{ rotate: currentRotation + rotationOffset }}
+        transition={{ duration: ANIMATION_TIME }}
+      >
+        {textLabels}
+      </motion.g>
+    );
+  } else {
+    ringMarkup = (
+      <motion.g
+        style={{
+          originX: `${globalRadius}px`,
+          originY: `${globalRadius}px`,
+        }}
+        animate={{ rotate: currentRotation + rotationOffset }}
+        transition={{ duration: ANIMATION_TIME }}
+      >
+        {slices}
+        {textLabels}
+        {ringGaps}
+      </motion.g>
+    );
+  }
+
+  return <>{ringMarkup}</>;
 }

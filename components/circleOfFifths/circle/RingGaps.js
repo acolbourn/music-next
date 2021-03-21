@@ -1,4 +1,6 @@
-export default function RingGaps({
+import React from 'react';
+
+const RingGaps = React.memo(function RingGaps({
   globalRadius,
   gap,
   backgroundColor,
@@ -27,4 +29,6 @@ export default function RingGaps({
   }
 
   return <g>{ringGaps}</g>;
-}
+});
+
+export default RingGaps;

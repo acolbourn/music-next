@@ -1,6 +1,7 @@
 import { useState, useMemo, useContext } from 'react';
 import { ScaleContext } from '../contexts/scaleContext';
-import RingSVG from './RingSVG';
+import { getRandomInt, getRingRotation } from './circleConstants';
+import Ring from './Ring';
 
 export default function RingRotations({
   ringParams,
@@ -47,13 +48,11 @@ export default function RingRotations({
   ];
 
   function handleClick(e) {
-    const spinLeft = -360;
-    const spinRight = 360;
     const clickedSlice = e.target.getAttribute('name').split('-');
     const ringTitle = clickedSlice[0];
     const sliceIndex = clickedSlice[1];
-    console.log(ringTitle, sliceIndex);
 
+    // Set rotation of each ring
     setRotation((prevState) => {
       // Determine closest spin direction of outer ring
       const targetAngle = sliceIndex * 30;
@@ -62,63 +61,44 @@ export default function RingRotations({
       if (Math.abs(targetAngle - prevState.majorNumerals > 180)) {
         outerRotation -= 360;
       }
-
       // Determine which direction outer ring will spin
       let outerRingSpin = 'right';
       if (outerRotation - prevState.majorNumerals < 0) {
         outerRingSpin = 'left';
       }
-      console.log(outerRingSpin);
-
-      // function getRotation(ringID){
-
-      // Rotation determined by following equation:
-      // new rotation = new key rotation - old key rotation +  previous rotation + spinDirection (spin solved in next step)
-      let majorKeyRot =
-        targetAngle - prevState.majorNumerals + prevState.majorKeySigSlices;
-
-      console.log(
-        `target: ${targetAngle} - prev numerals: ${prevState.majorNumerals} + prev keySlices: ${prevState.majorKeySigSlices} = ${majorKeyRot}`
+      // Get rotations of inner rings
+      const majorKeyRotation = getRingRotation(
+        'majorKeySigSlices',
+        true,
+        getRandomInt(3),
+        targetAngle,
+        prevState,
+        outerRingSpin
       );
-
-      // Spin opposite of outer ring
-      // Calculate expected default spin direction
-      let expectedMajorSpin = 'right';
-      if (majorKeyRot - prevState.majorKeySigSlices < 0)
-        expectedMajorSpin = 'left';
-      else expectedMajorSpin = 'right';
-
-      while (expectedMajorSpin === outerRingSpin) {
-        if (outerRingSpin === 'left') {
-          majorKeyRot += spinRight;
-        } else if (outerRingSpin === 'right') {
-          majorKeyRot += spinLeft;
-        }
-
-        if (majorKeyRot - prevState.majorKeySigSlices < 0)
-          expectedMajorSpin = 'left';
-        else expectedMajorSpin = 'right';
-      }
-
-      // // Make inner rings spin two loops
-      // if (outerRingSpin === 'left') {
-      //   innerRing += spinRight;
-      //   minorKeyRot += spinLeft;
-      // } else if (outerRingSpin === 'right') {
-      //   innerRing += spinLeft;
-      //   minorKeyRot += spinRight;
-      // }
-
-      console.log(`expected: ${expectedMajorSpin}, = ${majorKeyRot}`);
+      const minorKeyRotation = getRingRotation(
+        'minorKeySigSlices',
+        false,
+        getRandomInt(3),
+        targetAngle,
+        prevState,
+        outerRingSpin
+      );
+      const minorNumerals = getRingRotation(
+        'minorNumerals',
+        true,
+        getRandomInt(3),
+        targetAngle,
+        prevState,
+        outerRingSpin
+      );
 
       const newRotations = {
         majorNumerals: outerRotation,
-        majorKeySigSlices: majorKeyRot,
-        minorKeySigSlices: outerRotation,
-        minorNumerals: majorKeyRot,
+        majorKeySigSlices: majorKeyRotation,
+        minorKeySigSlices: minorKeyRotation,
+        minorNumerals: minorNumerals,
       };
 
-      console.log(newRotations);
       return newRotations;
     });
 
@@ -142,7 +122,7 @@ export default function RingRotations({
   const dynamicRings = dynamicRingParams.map((ringParam) => {
     if (ringParam.static === false) {
       return (
-        <RingSVG
+        <Ring
           key={ringParam.ringName}
           ringParams={ringParam}
           globalRadius={globalRadius}
@@ -160,7 +140,7 @@ export default function RingRotations({
     return staticRingParams.map((ringParam) => {
       if (ringParam.static === true) {
         return (
-          <RingSVG
+          <Ring
             key={ringParam.ringName}
             ringParams={ringParam}
             globalRadius={globalRadius}
