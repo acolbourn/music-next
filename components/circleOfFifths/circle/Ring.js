@@ -10,6 +10,16 @@ const useStyles = makeStyles({
   sharpsFlatslabel: {
     fontSize: '4px',
   },
+  slice: {
+    // prevent blue highlight on click on touchscreens
+    WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+    WebkitTapHighlightColor: 'transparent',
+    WebkitUserSelect: 'none',
+    KhtmlUserSelect: 'none',
+    MozUserSelect: 'none',
+    MsUserSelect: 'none',
+    userSelect: 'none',
+  },
 });
 
 export default function Ring({
@@ -44,6 +54,7 @@ export default function Ring({
       slice = (
         <circle
           key={index}
+          className={classes.slice}
           name={`${ringName}-${index}`}
           onClick={
             ringName === 'majorClickHandler' || ringName === 'minorClickHandler'

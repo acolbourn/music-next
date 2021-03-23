@@ -4,7 +4,6 @@ import { replaceFlatsSharps } from './circle/circleConstants';
 
 const useStyles = makeStyles((theme) => ({
   chordCardRoot: ({ color }) => ({
-    // backgroundColor: theme.colors.secondary,
     backgroundColor: color === 'standard' ? theme.colors.secondary : color,
     width: '100%',
     height: '100%',
@@ -20,11 +19,13 @@ const useStyles = makeStyles((theme) => ({
   }),
   romanNumeral: {
     gridArea: 'romanNumeral',
-    // backgroundColor: theme.colors.secondary,
-    fontSize: '1.2rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize: '1.2rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
   },
   divider: {
     gridArea: 'divider',
@@ -33,11 +34,13 @@ const useStyles = makeStyles((theme) => ({
   },
   chord: {
     gridArea: 'chord',
-    // backgroundColor: 'green',
-    fontSize: '1.2rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize: '1.2rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
   },
 }));
 

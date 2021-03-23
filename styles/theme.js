@@ -13,7 +13,8 @@ const theme = createMuiTheme({
       primary: '#fff',
     },
     background: {
-      primary: '#1D1D1D',
+      primary: 'black',
+      // primary: '#1D1D1D',
       navBar: '#181818',
     },
   },
@@ -24,6 +25,8 @@ const theme = createMuiTheme({
   },
   misc: {
     borderRadius: 6,
+    gridSpacing: '3px',
+    gridSpacingMobile: '2px',
   },
   typography: {
     fontFamily: [

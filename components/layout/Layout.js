@@ -50,7 +50,7 @@ export default function Layout({ children }) {
       </header>
       <div className={classes.bodyAndFooter}>
         <main className={classes.body}>{children}</main>
-        <footer className={classes.footer}>Footer</footer>
+        <footer className={classes.footer}></footer>
       </div>
     </div>
   );

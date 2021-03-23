@@ -7,6 +7,7 @@ import ChordCard from './ChordCard';
 
 // To create background image behind cards, a mixture of borders and box shadows are used.  Box shadows create the window effect and grid spacing is calculated using cardSpacing variable in px.
 const cardSpacing = 4;
+const cardSpacingMobile = 2;
 
 const useStyles = makeStyles((theme) => ({
   chordRow: {
@@ -16,11 +17,15 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(min-content, 1fr))',
-    gridTemplateRows: '80px',
+    gridTemplateRows: '70px',
   },
   holeCutOut: {
     overflow: 'hidden',
-    border: `${cardSpacing}px solid ${theme.colors.background.primary}`,
+    // border: `${cardSpacing}px solid ${theme.colors.background.primary}`,
+    border: `${theme.misc.gridSpacing} solid ${theme.colors.background.primary}`,
+    [theme.breakpoints.down('xs')]: {
+      border: `${theme.misc.gridSpacingMobile} solid ${theme.colors.background.primary}`,
+    },
   },
   chordCardBox: {
     // Box shadow is used to make a hole behind card so background gif is visible

@@ -11,13 +11,13 @@ import {
 import RingRotations from './RingRotations';
 
 const useStyles = makeStyles({
-  circleSVGRoot: ({ backgroundColor }) => ({
+  circleRoot: ({ backgroundColor }) => ({
     width: '100%',
     height: '100%',
     backgroundColor: backgroundColor,
     display: 'grid',
     gridTemplateColumns: '1fr',
-    gridTemplateRows: '1fr 1fr',
+    gridTemplateRows: '1fr min-content',
   }),
   SVGViewbox: {
     width: '100%',
@@ -189,7 +189,7 @@ export default function Circle() {
   ];
 
   return (
-    <div className={classes.circleSVGRoot}>
+    <div className={classes.circleRoot}>
       <svg
         className={classes.SVGViewbox}
         height={globalDiameter}

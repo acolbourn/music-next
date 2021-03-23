@@ -360,14 +360,18 @@ const replaceFlatsSharps = (label) => {
 
 /**
  * Take in a scale object and return a formatted string.
- * @param {scale} scale Scale object ex. {root: 'C', type: 'major'}
+ * @param {object} scale Scale object ex. {root: 'C', type: 'major'}
+ * @param {string} relation Relation to main key sig (ex. Parallel minor)}
  * @returns {string} Formatted label.
  */
-const formatScaleLabel = (scale) => {
-  const scaleType = scale.type[0].toUpperCase() + scale.type.slice(1);
+const formatScaleLabel = (scale, relation) => {
+  let scaleType = scale.type[0].toUpperCase() + scale.type.slice(1);
+  if (relation.includes('Parallel') || relation.includes('Relative'))
+    scaleType = relation;
   // Replace b/# with sharp/flat music symbols.
   const scaleLetter = replaceFlatsSharps(scale.root);
-  return `${scaleLetter} ${scaleType} Scale`;
+  const newLabel = `${scaleLetter} ${scaleType} Scale`;
+  return newLabel;
 };
 
 /**

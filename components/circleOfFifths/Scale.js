@@ -4,16 +4,28 @@ import { replaceFlatsSharps, formatScaleLabel } from './circle/circleConstants';
 const useStyles = makeStyles((theme) => ({
   scaleRoot: {
     backgroundColor: theme.colors.background.primary,
+    borderRadius: '15px',
+    border: `1px solid ${theme.colors.primary}`,
+    // borderRadius: theme.misc.borderRadius,
+    marginTop: theme.misc.gridSpacing,
+    marginBottom: theme.misc.gridSpacing,
     display: 'flex',
     flexDirection: 'row',
   },
   title: {
     fontSize: '1rem',
-    margin: '5px',
+    margin: '3px 15px',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8rem',
+    },
   },
   note: {
-    margin: '6px',
+    margin: '4px',
     fontSize: '1rem',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8rem',
+      margin: '4px 3px',
+    },
   },
 }));
 
@@ -26,13 +38,13 @@ export default function Scale({ scaleNotes, keySig, relation }) {
     </div>
   ));
 
-  const scaleTitle = formatScaleLabel(keySig);
+  const scaleTitle = formatScaleLabel(keySig, relation);
 
   return (
     <div className={classes.scaleRoot}>
-      {relation === 'Primary' ? null : (
+      {/* {relation === 'Primary' ? null : (
         <h2 className={classes.title}>{relation}</h2>
-      )}
+      )} */}
       <h2 className={classes.title}>{scaleTitle}</h2>
       {notes}
     </div>
