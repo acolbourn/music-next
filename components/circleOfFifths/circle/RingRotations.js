@@ -70,7 +70,7 @@ export default function RingRotations({
       const majorKeyRotation = getRingRotation(
         'majorKeySigSlices',
         true,
-        getRandomInt(3),
+        0,
         targetAngle,
         prevState,
         outerRingSpin
@@ -78,7 +78,7 @@ export default function RingRotations({
       const minorKeyRotation = getRingRotation(
         'minorKeySigSlices',
         false,
-        getRandomInt(3),
+        1,
         targetAngle,
         prevState,
         outerRingSpin
@@ -86,7 +86,7 @@ export default function RingRotations({
       const minorNumerals = getRingRotation(
         'minorNumerals',
         true,
-        getRandomInt(3),
+        1,
         targetAngle,
         prevState,
         outerRingSpin

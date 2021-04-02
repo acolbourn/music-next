@@ -4,11 +4,13 @@ import { replaceFlatsSharps, formatScaleLabel } from './circle/circleConstants';
 const useStyles = makeStyles((theme) => ({
   scaleRoot: {
     backgroundColor: theme.colors.background.primary,
-    borderRadius: '15px',
+    // borderRadius: '15px',
     border: `1px solid ${theme.colors.primary}`,
-    // borderRadius: theme.misc.borderRadius,
-    marginTop: theme.misc.gridSpacing,
-    marginBottom: theme.misc.gridSpacing,
+    borderRadius: theme.misc.borderRadius,
+    margin: `${theme.misc.gridSpacing} 0`,
+    [theme.breakpoints.down('xs')]: {
+      margin: `${theme.misc.gridSpacingMobile} 0`,
+    },
     display: 'flex',
     flexDirection: 'row',
   },

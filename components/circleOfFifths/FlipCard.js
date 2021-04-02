@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import { ANIMATION_TIME } from './circle/circleConstants';
-import { AnimationContext } from './contexts/animationContext';
 
 const useStyles = makeStyles((theme) => ({
   flipCardRoot: {
@@ -22,11 +21,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FlipCard({ newCard }) {
+export default function FlipCard({ newCard, yRotation }) {
   const classes = useStyles();
-  const { isBackground, setIsBackground } = useContext(AnimationContext);
   const [flip, setFlip] = useState(false);
   const isFirstRun = useRef(true);
+
+  // Assign rotations of cards in degrees [side 1 init, side 1 final, side 2 init, side 2 final]
+  let rotations = [0, -180, 180, 0];
+  // If specified, spin opposite direction by multiplying by -1
+  // if (yRotation === 'opposite') {
+  //   rotations.forEach((item, index) => {
+  //     if (rotations[index] !== 0) rotations[index] *= -1;
+  //   });
+  // }
+
+  console.log(rotations);
 
   // Create card queue with initial card on front/back
   const [cardQueue, setCardQueue] = useState([newCard, newCard]);
@@ -60,35 +69,36 @@ export default function FlipCard({ newCard }) {
     side2 = cardQueue[0];
   }
 
-  // Update animation context on start/finish so gif background is toggled on/off.  This is necessary to ensure background is not visible if framer-motion causes gaps on card edges.
-  const onAnimStart = () => {
-    if (isBackground !== true) {
-      setIsBackground(true);
-    }
-  };
-
-  const onAnimEnd = () => {
-    if (isBackground !== false) {
-      setIsBackground(false);
-    }
-  };
-
   return (
     <motion.div className={classes.flipCardRoot}>
       <motion.div
         className={classes.cardFace}
-        initial={{ rotateY: 0 }}
-        animate={{ rotateY: flip ? -180 : 0 }}
+        initial={{
+          rotateX: rotations[0],
+          rotateY: rotations[0],
+          rotateZ: rotations[0],
+        }}
+        animate={{
+          rotateX: flip ? rotations[1] : rotations[0],
+          rotateY: flip ? rotations[1] : rotations[0],
+          rotateZ: flip ? rotations[1] : rotations[0],
+        }}
         transition={{ duration: ANIMATION_TIME }}
-        onAnimationStart={onAnimStart}
-        onAnimationComplete={onAnimEnd}
       >
         {side1}
       </motion.div>
       <motion.div
         className={classes.cardFace}
-        initial={{ rotateY: 180 }}
-        animate={{ rotateY: flip ? 0 : 180 }}
+        initial={{
+          rotateX: rotations[2],
+          rotateY: rotations[2],
+          rotateZ: rotations[2],
+        }}
+        animate={{
+          rotateX: flip ? rotations[3] : rotations[2],
+          rotateY: flip ? rotations[3] : rotations[2],
+          rotateZ: flip ? rotations[3] : rotations[2],
+        }}
         transition={{ duration: ANIMATION_TIME }}
       >
         {side2}

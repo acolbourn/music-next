@@ -5,10 +5,6 @@ import { getCardColors } from './circle/circleConstants';
 import FlipCard from './FlipCard';
 import ChordCard from './ChordCard';
 
-// To create background image behind cards, a mixture of borders and box shadows are used.  Box shadows create the window effect and grid spacing is calculated using cardSpacing variable in px.
-const cardSpacing = 4;
-const cardSpacingMobile = 2;
-
 const useStyles = makeStyles((theme) => ({
   chordRow: {
     backgroundColor: theme.colors.background.primary,
@@ -18,22 +14,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(min-content, 1fr))',
     gridTemplateRows: '70px',
-  },
-  holeCutOut: {
-    overflow: 'hidden',
-    // border: `${cardSpacing}px solid ${theme.colors.background.primary}`,
-    border: `${theme.misc.gridSpacing} solid ${theme.colors.background.primary}`,
+    gridGap: theme.misc.gridSpacing,
     [theme.breakpoints.down('xs')]: {
-      border: `${theme.misc.gridSpacingMobile} solid ${theme.colors.background.primary}`,
+      gridGap: theme.misc.gridSpacingMobile,
     },
   },
   chordCardBox: {
-    // Box shadow is used to make a hole behind card so background gif is visible
-    boxShadow: `0 0 0 800px ${theme.colors.background.primary}`,
-    // Make border radius slightly bigger to fill in corner gaps
-    borderRadius: `${theme.misc.borderRadius + 3}px`,
     width: '100%',
-    // width: 'calc(100% + 2px)',
     height: '100%',
   },
   cardContent: {
@@ -66,10 +53,11 @@ export default function CardRow({ chords, keySig, relation }) {
 
   // Map new card faces onto flip card
   const chordRow = newCards.map((newCard, index) => (
-    <div key={index} className={classes.holeCutOut}>
-      <div className={classes.chordCardBox}>
-        <FlipCard newCard={newCard} />
-      </div>
+    <div key={index} className={classes.chordCardBox}>
+      <FlipCard
+        newCard={newCard}
+        yRotation={index % 2 === 0 ? 'opposite' : 'standard'}
+      />
     </div>
   ));
 

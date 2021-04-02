@@ -24,9 +24,9 @@ const theme = createMuiTheme({
     music: 'Campania',
   },
   misc: {
-    borderRadius: 6,
-    gridSpacing: '3px',
-    gridSpacingMobile: '2px',
+    borderRadius: 3,
+    gridSpacing: '5px',
+    gridSpacingMobile: '3px',
   },
   typography: {
     fontFamily: [
