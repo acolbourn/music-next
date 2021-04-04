@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CardRow({ chords, keySig, relation }) {
+export default function CardRow({ chords, keySig, relation, flipTypes }) {
   console.log('Chord Row Rendered');
   const classes = useStyles();
 
@@ -57,6 +57,7 @@ export default function CardRow({ chords, keySig, relation }) {
       <FlipCard
         newCard={newCard}
         yRotation={index % 2 === 0 ? 'opposite' : 'standard'}
+        flipTypes={flipTypes}
       />
     </div>
   ));

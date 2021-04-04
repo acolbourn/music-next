@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ChordRow({ relatedKey }) {
+export default function ChordRow({ relatedKey, flipTypes }) {
   const classes = useStyles();
 
   const { keySig, relation } = relatedKey;
@@ -20,7 +20,12 @@ export default function ChordRow({ relatedKey }) {
   return (
     <div className={classes.chordRowRoot}>
       <Scale scaleNotes={scaleNotes} keySig={keySig} relation={relation} />
-      <CardRow chords={chords} keySig={keySig} relation={relation} />
+      <CardRow
+        chords={chords}
+        keySig={keySig}
+        relation={relation}
+        flipTypes={flipTypes}
+      />
     </div>
   );
 }

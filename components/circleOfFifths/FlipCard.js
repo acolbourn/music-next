@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import { ANIMATION_TIME } from './circle/circleConstants';
@@ -19,23 +19,25 @@ const useStyles = makeStyles((theme) => ({
     WebkitBackfaceVisibility: 'hidden',
     backgroundColor: theme.colors.secondary,
   },
+  side1: {
+    border: '1px solid green',
+  },
 }));
 
-export default function FlipCard({ newCard, yRotation }) {
+export default function FlipCard({ newCard, flipTypes }) {
   const classes = useStyles();
-  const [flip, setFlip] = useState(false);
+  const [rotation, setRotation] = useState({
+    side1X: 0,
+    side2X: 0,
+    side1Y: 0,
+    side2Y: 180,
+    side1Z: 0,
+    side2Z: 0,
+    flip: false,
+    visibleSide: 1,
+    flipTypeIndex: 0,
+  });
   const isFirstRun = useRef(true);
-
-  // Assign rotations of cards in degrees [side 1 init, side 1 final, side 2 init, side 2 final]
-  let rotations = [0, -180, 180, 0];
-  // If specified, spin opposite direction by multiplying by -1
-  // if (yRotation === 'opposite') {
-  //   rotations.forEach((item, index) => {
-  //     if (rotations[index] !== 0) rotations[index] *= -1;
-  //   });
-  // }
-
-  console.log(rotations);
 
   // Create card queue with initial card on front/back
   const [cardQueue, setCardQueue] = useState([newCard, newCard]);
@@ -54,14 +56,15 @@ export default function FlipCard({ newCard, yRotation }) {
     if (isFirstRun.current) {
       isFirstRun.current = false;
     } else {
-      setFlip((flip) => !flip);
+      handleFlip(false, true);
+      // handleFlip(true, false);
     }
   }, [newCard]);
 
   // Map current and previous chord cards to each side of card
   let side1;
   let side2;
-  if (flip) {
+  if (rotation.flip) {
     side1 = cardQueue[0];
     side2 = cardQueue[1];
   } else {
@@ -69,37 +72,123 @@ export default function FlipCard({ newCard, yRotation }) {
     side2 = cardQueue[0];
   }
 
+  const handleFlip = () => {
+    setRotation((rotation) => {
+      const newRotation = { ...rotation };
+      newRotation.flip = !newRotation.flip;
+      newRotation.flipTypeIndex = incrementFlipType(
+        newRotation.flipTypeIndex,
+        flipTypes.length
+      );
+
+      const flipX = flipTypes[rotation.flipTypeIndex].x;
+      const flipY = flipTypes[rotation.flipTypeIndex].y;
+      const flipXAndY = flipX && flipY;
+
+      // Assign rotations
+      if (flipXAndY) {
+        console.log('Flipping X and Y');
+        if (newRotation.side1X === 0) {
+          newRotation.side1X = -180;
+          newRotation.side2X = -180;
+        } else {
+          newRotation.side1X = 0;
+          newRotation.side2X = 0;
+        }
+        if (newRotation.side1Y === 0) {
+          newRotation.side1Y = -180;
+          newRotation.side2Y = 0;
+        } else {
+          newRotation.side1Y = 0;
+          newRotation.side2Y = 180;
+        }
+      } else {
+        if (flipX) {
+          console.log('Flipping X');
+          if (newRotation.side1X === 0) {
+            newRotation.side1X = -180;
+            newRotation.side2X = -180;
+          } else {
+            newRotation.side1X = 0;
+            newRotation.side2X = 0;
+          }
+        }
+        if (flipY) {
+          console.log('Flipping Y');
+          if (newRotation.side1Y === 0) {
+            newRotation.side1Y = -180;
+            newRotation.side2Y = 0;
+          } else {
+            newRotation.side1Y = 0;
+            newRotation.side2Y = 180;
+          }
+        }
+      }
+
+      // Flip Z if needed so card is facing right side up
+      console.log('visible side: ', newRotation.visibleSide);
+      if (newRotation.visibleSide === 1) {
+        if (newRotation.side2X === -180 && newRotation.side2Y === 180) {
+          newRotation.side2Z = 180;
+        } else {
+          newRotation.side2Z = 0;
+        }
+      } else if (newRotation.visibleSide === 2) {
+        if (newRotation.side1X === -180 && newRotation.side1Y === -180) {
+          newRotation.side1Z = 180;
+        } else {
+          newRotation.side1Z = 0;
+        }
+      }
+
+      if (newRotation.visibleSide === 1) newRotation.visibleSide = 2;
+      else if (newRotation.visibleSide === 2) newRotation.visibleSide = 1;
+
+      console.log(newRotation);
+      return newRotation;
+    });
+  };
+
+  // Increments index of flip types array so each flip is different
+  const incrementFlipType = (currentIndex, flipTypesLength) => {
+    let newIndex = currentIndex + 1;
+    if (newIndex >= flipTypesLength) newIndex = 0;
+    return newIndex;
+  };
+
   return (
     <motion.div className={classes.flipCardRoot}>
       <motion.div
-        className={classes.cardFace}
+        className={`${classes.cardFace} ${classes.side1}`}
         initial={{
-          rotateX: rotations[0],
-          rotateY: rotations[0],
-          rotateZ: rotations[0],
+          rotateX: rotation.side1X,
+          rotateY: rotation.side1Y,
+          rotateZ: rotation.side1Z,
         }}
         animate={{
-          rotateX: flip ? rotations[1] : rotations[0],
-          rotateY: flip ? rotations[1] : rotations[0],
-          rotateZ: flip ? rotations[1] : rotations[0],
+          rotateX: rotation.side1X,
+          rotateY: rotation.side1Y,
+          rotateZ: rotation.side1Z,
         }}
-        transition={{ duration: ANIMATION_TIME }}
+        // transition={{ duration: ANIMATION_TIME }}
+        transition={{ duration: ANIMATION_TIME, rotateZ: { duration: 0 } }}
       >
         {side1}
       </motion.div>
       <motion.div
         className={classes.cardFace}
         initial={{
-          rotateX: rotations[2],
-          rotateY: rotations[2],
-          rotateZ: rotations[2],
+          rotateX: rotation.side2X,
+          rotateY: rotation.side2Y,
+          rotateZ: rotation.side2Z,
         }}
         animate={{
-          rotateX: flip ? rotations[3] : rotations[2],
-          rotateY: flip ? rotations[3] : rotations[2],
-          rotateZ: flip ? rotations[3] : rotations[2],
+          rotateX: rotation.side2X,
+          rotateY: rotation.side2Y,
+          rotateZ: rotation.side2Z,
         }}
-        transition={{ duration: ANIMATION_TIME }}
+        // transition={{ duration: ANIMATION_TIME }}
+        transition={{ duration: ANIMATION_TIME, rotateZ: { duration: 0 } }}
       >
         {side2}
       </motion.div>
