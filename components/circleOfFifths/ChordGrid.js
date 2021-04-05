@@ -16,7 +16,7 @@ export default function ChordGrid() {
   const flipTypes = [
     { x: false, y: true },
     { x: true, y: false },
-    // { x: true, y: true },
+    { x: true, y: true },
   ];
 
   const relatedKeys = getRelatedKeys(scale);

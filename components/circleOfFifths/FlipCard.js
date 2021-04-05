@@ -24,6 +24,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Framer Motion animation variants
+const variants = {
+  side1Initial: (rotation) => ({
+    rotateX: rotation.side1X,
+    rotateY: rotation.side1Y,
+    rotateZ: rotation.side1Z,
+  }),
+  side1FlipSingleAxis: (rotation) => ({
+    rotateX: rotation.side1X,
+    rotateY: rotation.side1Y,
+    rotateZ: rotation.side1Z,
+    transition: { duration: ANIMATION_TIME, rotateZ: { duration: 0 } },
+  }),
+  side1FlipTwoAxis: (rotation) => ({
+    rotateX: rotation.side1X,
+    rotateY: rotation.side1Y,
+    rotateZ: rotation.side1Z,
+    transition: { duration: ANIMATION_TIME },
+  }),
+  side2Initial: (rotation) => ({
+    rotateX: rotation.side2X,
+    rotateY: rotation.side2Y,
+    rotateZ: rotation.side2Z,
+  }),
+  side2FlipSingleAxis: (rotation) => ({
+    rotateX: rotation.side2X,
+    rotateY: rotation.side2Y,
+    rotateZ: rotation.side2Z,
+    transition: { duration: ANIMATION_TIME, rotateZ: { duration: 0 } },
+  }),
+  side2FlipTwoAxis: (rotation) => ({
+    rotateX: rotation.side2X,
+    rotateY: rotation.side2Y,
+    rotateZ: rotation.side2Z,
+    transition: { duration: ANIMATION_TIME },
+  }),
+};
+
 export default function FlipCard({ newCard, flipTypes }) {
   const classes = useStyles();
   const [rotation, setRotation] = useState({
@@ -36,6 +74,9 @@ export default function FlipCard({ newCard, flipTypes }) {
     flip: false,
     visibleSide: 1,
     flipTypeIndex: 0,
+    flipX: flipTypes[0].x,
+    flipY: flipTypes[0].y,
+    flipXAndY: flipTypes[0].x && flipTypes[0].y,
   });
   const isFirstRun = useRef(true);
 
@@ -72,6 +113,12 @@ export default function FlipCard({ newCard, flipTypes }) {
     side2 = cardQueue[0];
   }
 
+  // Extract user specified flip type
+  const flipX = flipTypes[rotation.flipTypeIndex].x;
+  const flipY = flipTypes[rotation.flipTypeIndex].y;
+  const flipXAndY = flipX && flipY;
+  console.log(flipX, flipY, 'flipXAndY: ', flipXAndY);
+
   const handleFlip = () => {
     setRotation((rotation) => {
       const newRotation = { ...rotation };
@@ -81,29 +128,39 @@ export default function FlipCard({ newCard, flipTypes }) {
         flipTypes.length
       );
 
-      const flipX = flipTypes[rotation.flipTypeIndex].x;
-      const flipY = flipTypes[rotation.flipTypeIndex].y;
-      const flipXAndY = flipX && flipY;
+      // Set flip type
+      newRotation.flipX = flipTypes[rotation.flipTypeIndex].x;
+      newRotation.flipY = flipTypes[rotation.flipTypeIndex].y;
+      newRotation.flipXAndY = newRotation.flipX && newRotation.flipY;
 
       // Assign rotations
-      if (flipXAndY) {
+      if (newRotation.flipXAndY) {
         console.log('Flipping X and Y');
-        if (newRotation.side1X === 0) {
-          newRotation.side1X = -180;
-          newRotation.side2X = -180;
-        } else {
-          newRotation.side1X = 0;
-          newRotation.side2X = 0;
-        }
+        // if (newRotation.side1X === 0) {
+        //   newRotation.side1X = -180;
+        //   newRotation.side2X = -180;
+        //   // newRotation.side1Z = 180;
+        //   // newRotation.side2Z = 180;
+        // } else {
+        //   newRotation.side1X = 0;
+        //   newRotation.side2X = 0;
+        //   // newRotation.side1Z = 0;
+        //   // newRotation.side2Z = 0;
+        // }
         if (newRotation.side1Y === 0) {
           newRotation.side1Y = -180;
           newRotation.side2Y = 0;
+          newRotation.side1Z = 180;
+          newRotation.side2Z = 0;
         } else {
           newRotation.side1Y = 0;
           newRotation.side2Y = 180;
+          newRotation.side1Z = 0;
+          newRotation.side2Z = 180;
         }
       } else {
-        if (flipX) {
+        // Flip logic for either X or Y separately
+        if (newRotation.flipX) {
           console.log('Flipping X');
           if (newRotation.side1X === 0) {
             newRotation.side1X = -180;
@@ -113,7 +170,7 @@ export default function FlipCard({ newCard, flipTypes }) {
             newRotation.side2X = 0;
           }
         }
-        if (flipY) {
+        if (newRotation.flipY) {
           console.log('Flipping Y');
           if (newRotation.side1Y === 0) {
             newRotation.side1Y = -180;
@@ -123,21 +180,20 @@ export default function FlipCard({ newCard, flipTypes }) {
             newRotation.side2Y = 180;
           }
         }
-      }
-
-      // Flip Z if needed so card is facing right side up
-      console.log('visible side: ', newRotation.visibleSide);
-      if (newRotation.visibleSide === 1) {
-        if (newRotation.side2X === -180 && newRotation.side2Y === 180) {
-          newRotation.side2Z = 180;
-        } else {
-          newRotation.side2Z = 0;
-        }
-      } else if (newRotation.visibleSide === 2) {
-        if (newRotation.side1X === -180 && newRotation.side1Y === -180) {
-          newRotation.side1Z = 180;
-        } else {
-          newRotation.side1Z = 0;
+        // Flip Z if needed so card is facing right side up
+        console.log('visible side: ', newRotation.visibleSide);
+        if (newRotation.visibleSide === 1) {
+          if (newRotation.side2X === -180 && newRotation.side2Y === 180) {
+            newRotation.side2Z = 180;
+          } else {
+            newRotation.side2Z = 0;
+          }
+        } else if (newRotation.visibleSide === 2) {
+          if (newRotation.side1X === -180 && newRotation.side1Y === -180) {
+            newRotation.side1Z = 180;
+          } else {
+            newRotation.side1Z = 0;
+          }
         }
       }
 
@@ -160,35 +216,23 @@ export default function FlipCard({ newCard, flipTypes }) {
     <motion.div className={classes.flipCardRoot}>
       <motion.div
         className={`${classes.cardFace} ${classes.side1}`}
-        initial={{
-          rotateX: rotation.side1X,
-          rotateY: rotation.side1Y,
-          rotateZ: rotation.side1Z,
-        }}
-        animate={{
-          rotateX: rotation.side1X,
-          rotateY: rotation.side1Y,
-          rotateZ: rotation.side1Z,
-        }}
-        // transition={{ duration: ANIMATION_TIME }}
-        transition={{ duration: ANIMATION_TIME, rotateZ: { duration: 0 } }}
+        custom={rotation}
+        variants={variants}
+        initial='side1Initial'
+        animate={
+          rotation.flipXAndY ? 'side1FlipTwoAxis' : 'side1FlipSingleAxis'
+        }
       >
         {side1}
       </motion.div>
       <motion.div
         className={classes.cardFace}
-        initial={{
-          rotateX: rotation.side2X,
-          rotateY: rotation.side2Y,
-          rotateZ: rotation.side2Z,
-        }}
-        animate={{
-          rotateX: rotation.side2X,
-          rotateY: rotation.side2Y,
-          rotateZ: rotation.side2Z,
-        }}
-        // transition={{ duration: ANIMATION_TIME }}
-        transition={{ duration: ANIMATION_TIME, rotateZ: { duration: 0 } }}
+        custom={rotation}
+        variants={variants}
+        initial='side2Initial'
+        animate={
+          rotation.flipXAndY ? 'side2FlipTwoAxis' : 'side2FlipSingleAxis'
+        }
       >
         {side2}
       </motion.div>

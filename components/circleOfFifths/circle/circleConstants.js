@@ -153,7 +153,7 @@ for (let i = 0; i < 12; i++) {
 const DIAMETER = 500; // Overall circle diameter
 
 // Global animation speed of framer-motion effects in seconds.
-const ANIMATION_TIME = 3;
+const ANIMATION_TIME = 2;
 
 /**
  * Calculate text coordinates.
