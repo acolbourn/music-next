@@ -5,7 +5,7 @@ import { getRelatedKeys } from './circle/circleConstants';
 import ChordRow from './ChordRow';
 
 const useStyles = makeStyles({
-  chordGridRoot: { width: '100%', height: '100%' },
+  chordGridRoot: { width: '100%', height: '100%', overflow: 'hidden' },
 });
 
 export default function ChordGrid() {
@@ -15,8 +15,8 @@ export default function ChordGrid() {
 
   const flipTypes = [
     { x: false, y: true },
-    { x: true, y: false },
-    { x: true, y: true },
+    // { x: true, y: false },
+    // { x: true, y: true },
   ];
 
   const relatedKeys = getRelatedKeys(scale);

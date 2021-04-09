@@ -10,8 +10,10 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     overflow: 'hidden',
     borderRadius: theme.misc.borderRadius,
+    perspective: '100px' /* Remove this if you don't want the 3D effect */,
   },
   cardFace: {
+    transformStyle: 'preserve-3d',
     width: '100%',
     height: '100%',
     borderRadius: theme.misc.borderRadius,
@@ -35,7 +37,10 @@ const variants = {
     rotateX: rotation.side1X,
     rotateY: rotation.side1Y,
     rotateZ: rotation.side1Z,
-    transition: { duration: ANIMATION_TIME, rotateZ: { duration: 0 } },
+    transition: {
+      duration: ANIMATION_TIME,
+      rotateZ: { duration: 0 },
+    },
   }),
   side1FlipTwoAxis: (rotation) => ({
     rotateX: rotation.side1X,
@@ -52,7 +57,10 @@ const variants = {
     rotateX: rotation.side2X,
     rotateY: rotation.side2Y,
     rotateZ: rotation.side2Z,
-    transition: { duration: ANIMATION_TIME, rotateZ: { duration: 0 } },
+    transition: {
+      duration: ANIMATION_TIME,
+      rotateZ: { duration: 0 },
+    },
   }),
   side2FlipTwoAxis: (rotation) => ({
     rotateX: rotation.side2X,
