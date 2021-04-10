@@ -4,7 +4,6 @@ import { ANIMATION_TIME } from './circle/circleConstants';
 
 const useStyles = makeStyles((theme) => ({
   flipBox: {
-    // backgroundColor: 'white',
     backgroundColor: 'transparent',
     width: '100%',
     height: '100%',
@@ -38,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     width: '100%',
     height: '100%',
-    textAlign: 'center',
     transition: `transform ${ANIMATION_TIME}s`,
     transitionTimingFunction: 'ease-in-out',
     transformStyle: 'preserve-3d',
@@ -53,9 +51,15 @@ const useStyles = makeStyles((theme) => ({
     transform: 'rotateX(180deg)',
   },
   flipBoxCommon: {
+    // A CSS rounding error causes 1px gaps at various screen sizes so an outline is used to fill in the gaps
+    // outline: `1px solid ${theme.colors.secondary}`,
+    // boxShadow: `0px 0px 0px 1px dodgerBlue`,
+    boxShadow: `0px 0px 0px 1px ${theme.colors.secondary}`,
     backgroundColor: theme.colors.secondary,
     borderRadius: theme.misc.borderRadius,
     position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
     height: '100%',
     WebkitBackfaceVisibility: 'hidden' /* Safari */,

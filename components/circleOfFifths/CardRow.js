@@ -24,10 +24,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
-  cardContent: {
-    width: '100%',
-    height: '100%',
-  },
 }));
 
 export default function CardRow({ chords, keySig, relation, flipTypes }) {
@@ -42,13 +38,11 @@ export default function CardRow({ chords, keySig, relation, flipTypes }) {
   // Create memoized card faces when chords prop changes
   const newCards = useMemo(() => {
     return chords.map((chord, index) => (
-      <div className={classes.cardContent}>
-        <ChordCard
-          chord={chord.symbol}
-          label={labels[index]}
-          color={colors === null ? 'standard' : colors[index]}
-        />
-      </div>
+      <ChordCard
+        chord={chord.symbol}
+        label={labels[index]}
+        color={colors === null ? 'standard' : colors[index]}
+      />
     ));
   }, [chords, classes.cardContent]);
 
