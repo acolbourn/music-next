@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { CARD_LABELS } from './chordScaleHelpers';
 import { getCardColors } from './circle/circleConstants';
 import FlipCard from './FlipCard';
-import FlipCardCSS from './FlipCardCSS';
 import ChordCard from './ChordCard';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,10 +18,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       gridGap: theme.misc.gridSpacingMobile,
     },
-  },
-  chordCardBox: {
-    width: '100%',
-    height: '100%',
   },
 }));
 
@@ -48,14 +43,7 @@ export default function CardRow({ chords, keySig, relation, flipTypes }) {
 
   // Map new card faces onto flip card
   const chordRow = newCards.map((newCard, index) => (
-    <div key={index} className={classes.chordCardBox}>
-      {/* <FlipCard
-        newCard={newCard}
-        yRotation={index % 2 === 0 ? 'opposite' : 'standard'}
-        flipTypes={flipTypes}
-      /> */}
-      <FlipCardCSS newCard={newCard} />
-    </div>
+    <FlipCard newCard={newCard} key={index} flipTypes={flipTypes} />
   ));
 
   return <div className={classes.chordRow}>{chordRow}</div>;

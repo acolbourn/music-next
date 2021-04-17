@@ -1,91 +1,96 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { motion } from 'framer-motion';
-import { ANIMATION_TIME } from './circle/circleConstants';
+import { ANIMATION_TIME, getRandomInt } from './circle/circleConstants';
 
 const useStyles = makeStyles((theme) => ({
-  flipCardRoot: {
-    position: 'relative',
+  flipBox: {
+    backgroundColor: 'transparent',
     width: '100%',
     height: '100%',
-    overflow: 'hidden',
     borderRadius: theme.misc.borderRadius,
-    perspective: '100px' /* Remove this if you don't want the 3D effect */,
+    perspective: '100px',
+    // boxShadow: `
+    //   inset 0 0 50px #fff,
+    //   inset 20px 0 80px #f0f,
+    //   inset -20px 0 80px #0ff,
+    //   inset 20px 0 300px #f0f,
+    //   inset -20px 0 300px #0ff,
+    //   0 0 50px #fff,
+    //   -10px 0 80px #f0f,
+    //   10px 0 80px #0ff
+    // `,
+    // Create glowing background behind neighboring elements
+    // '&:before': {
+    //   content: '""',
+    //   position: 'absolute',
+    //   top: 0,
+    //   bottom: 0,
+    //   left: 0,
+    //   right: 0,
+    //   zIndex: -1,
+    //   boxShadow: '0px 0px 15px 5px #FFFFFF',
+    //   // boxShadow: '0 10px 35px  #FFFFFF,0 2px 15px  #FFFFFF',
+    //   // boxShadow: '0 10px 35px rgba(50,50,93,.1),0 2px 15px rgba(0,0,0,.07)',
+    // },
   },
-  cardFace: {
-    transformStyle: 'preserve-3d',
+  flipBoxInner: {
+    position: 'relative',
+    // width: '75px',
     width: '100%',
     height: '100%',
+    transition: `transform ${ANIMATION_TIME + Math.random()}s`,
+    transitionTimingFunction: 'ease-in-out',
+    transformStyle: 'preserve-3d',
+  },
+  // rotateY: {
+  //   // transform: 'rotateX(360deg) rotateY(180deg) ',
+  //   // transform: 'rotateX(180deg) rotateY(360deg) ',
+
+  //   transform: 'rotateY(180deg) ',
+  // },
+  // rotateX: {
+  //   transform: 'rotateX(180deg)',
+  // },
+  flipBoxCommon: {
+    // A CSS rounding error causes 1px gaps at various screen sizes so an outline is used to fill in the gaps
+    // outline: `1px solid ${theme.colors.secondary}`,
+    // boxShadow: `0px 0px 0px 1px dodgerBlue`,
+    // boxShadow: `0px 0px 0px 1px ${theme.colors.secondary}`,
+    // backgroundColor: theme.colors.secondary,
     borderRadius: theme.misc.borderRadius,
     position: 'absolute',
-    WebkitBackfaceVisibility: 'hidden',
-    backgroundColor: theme.colors.secondary,
+    width: '100%',
+    height: '100%',
+    WebkitBackfaceVisibility: 'hidden' /* Safari */,
+    backfaceVisibility: 'hidden',
+    '&:hover': {
+      boxShadow: '0px 0px 15px 5px #FFFFFF',
+    },
   },
-  side1: {
-    border: '1px solid green',
+  flipBoxFront: {
+    // backgroundColor: 'red',
+  },
+  flipBoxBack: {
+    // transform: 'rotateY(180deg)',
+    // backgroundColor: 'blue',
   },
 }));
 
-// Framer Motion animation variants
-const variants = {
-  side1Initial: (rotation) => ({
-    rotateX: rotation.side1X,
-    rotateY: rotation.side1Y,
-    rotateZ: rotation.side1Z,
-  }),
-  side1FlipSingleAxis: (rotation) => ({
-    rotateX: rotation.side1X,
-    rotateY: rotation.side1Y,
-    rotateZ: rotation.side1Z,
-    transition: {
-      duration: ANIMATION_TIME,
-      rotateZ: { duration: 0 },
-    },
-  }),
-  side1FlipTwoAxis: (rotation) => ({
-    rotateX: rotation.side1X,
-    rotateY: rotation.side1Y,
-    rotateZ: rotation.side1Z,
-    transition: { duration: ANIMATION_TIME },
-  }),
-  side2Initial: (rotation) => ({
-    rotateX: rotation.side2X,
-    rotateY: rotation.side2Y,
-    rotateZ: rotation.side2Z,
-  }),
-  side2FlipSingleAxis: (rotation) => ({
-    rotateX: rotation.side2X,
-    rotateY: rotation.side2Y,
-    rotateZ: rotation.side2Z,
-    transition: {
-      duration: ANIMATION_TIME,
-      rotateZ: { duration: 0 },
-    },
-  }),
-  side2FlipTwoAxis: (rotation) => ({
-    rotateX: rotation.side2X,
-    rotateY: rotation.side2Y,
-    rotateZ: rotation.side2Z,
-    transition: { duration: ANIMATION_TIME },
-  }),
-};
-
 export default function FlipCard({ newCard, flipTypes }) {
   const classes = useStyles();
+  // const [flip, setFlip] = useState(false);
   const [rotation, setRotation] = useState({
-    side1X: 0,
-    side2X: 0,
-    side1Y: 0,
-    side2Y: 180,
-    side1Z: 0,
-    side2Z: 0,
-    flip: false,
-    visibleSide: 1,
+    x: 0,
+    y: 0,
+    z: 0,
+    backX: 0,
+    backY: 180,
+    backZ: 0,
+    frontZ: 0,
+    isFront: true,
     flipTypeIndex: 0,
-    flipX: flipTypes[0].x,
-    flipY: flipTypes[0].y,
-    flipXAndY: flipTypes[0].x && flipTypes[0].y,
   });
+
   const isFirstRun = useRef(true);
 
   // Create card queue with initial card on front/back
@@ -105,7 +110,7 @@ export default function FlipCard({ newCard, flipTypes }) {
     if (isFirstRun.current) {
       isFirstRun.current = false;
     } else {
-      handleFlip(false, true);
+      handleFlip();
       // handleFlip(true, false);
     }
   }, [newCard]);
@@ -113,102 +118,110 @@ export default function FlipCard({ newCard, flipTypes }) {
   // Map current and previous chord cards to each side of card
   let side1;
   let side2;
-  if (rotation.flip) {
-    side1 = cardQueue[0];
-    side2 = cardQueue[1];
-  } else {
+  if (rotation.isFront) {
     side1 = cardQueue[1];
     side2 = cardQueue[0];
+  } else {
+    side1 = cardQueue[0];
+    side2 = cardQueue[1];
   }
 
-  // Extract user specified flip type
-  const flipX = flipTypes[rotation.flipTypeIndex].x;
-  const flipY = flipTypes[rotation.flipTypeIndex].y;
-  const flipXAndY = flipX && flipY;
-  console.log(flipX, flipY, 'flipXAndY: ', flipXAndY);
-
   const handleFlip = () => {
-    setRotation((rotation) => {
-      const newRotation = { ...rotation };
-      newRotation.flip = !newRotation.flip;
+    // setFlip((prev) => !prev);
+    setRotation((prev) => {
+      let newRotation = { ...prev };
+      newRotation.isFront = !newRotation.isFront;
+      const flipType = flipTypes[getRandomInt(flipTypes.length)];
+      // const flipType = flipTypes[newRotation.flipTypeIndex];
       newRotation.flipTypeIndex = incrementFlipType(
         newRotation.flipTypeIndex,
         flipTypes.length
       );
 
-      // Set flip type
-      newRotation.flipX = flipTypes[rotation.flipTypeIndex].x;
-      newRotation.flipY = flipTypes[rotation.flipTypeIndex].y;
-      newRotation.flipXAndY = newRotation.flipX && newRotation.flipY;
+      console.log(flipType);
+      // Calculate new rotations
+      switch (flipType) {
+        case 'yRight':
+          newRotation.y += 180;
+          break;
+        case 'yRightExtraSpin':
+          newRotation.y += 540;
+          break;
+        case 'yRightExtraSpin2':
+          newRotation.y += 900;
+          break;
+        case 'yLeft':
+          newRotation.y -= 180;
+          break;
+        case 'yLeftExtraSpin':
+          newRotation.y -= 540;
+          break;
+        case 'yLeftExtraSpin2':
+          newRotation.y -= 900;
+          break;
+        case 'xDown':
+          newRotation.x -= 180;
+          break;
+        case 'xDownExtraSpin':
+          newRotation.x -= 540;
+          break;
+        case 'xDownExtraSpin2':
+          newRotation.x -= 900;
+          break;
+        case 'xUp':
+          newRotation.x += 180;
+          break;
+        case 'xUpExtraSpin':
+          newRotation.x += 540;
+          break;
+        case 'xUpExtraSpin2':
+          newRotation.x += 900;
+          break;
+        case 'x360y180':
+          newRotation.x += 360;
+          newRotation.y += 180;
+          break;
+        case 'x180y360':
+          newRotation.x += 180;
+          newRotation.y += 360;
+          break;
+        default:
+          break;
+      }
+      //   // transform: 'rotateX(360deg) rotateY(180deg) ',
+      //   // transform: 'rotateX(180deg) rotateY(360deg) ',
 
-      // Assign rotations
-      if (newRotation.flipXAndY) {
-        console.log('Flipping X and Y');
-        // if (newRotation.side1X === 0) {
-        //   newRotation.side1X = -180;
-        //   newRotation.side2X = -180;
-        //   // newRotation.side1Z = 180;
-        //   // newRotation.side2Z = 180;
-        // } else {
-        //   newRotation.side1X = 0;
-        //   newRotation.side2X = 0;
-        //   // newRotation.side1Z = 0;
-        //   // newRotation.side2Z = 0;
-        // }
-        if (newRotation.side1Y === 0) {
-          newRotation.side1Y = -180;
-          newRotation.side2Y = 0;
-          newRotation.side1Z = 180;
-          newRotation.side2Z = 0;
-        } else {
-          newRotation.side1Y = 0;
-          newRotation.side2Y = 180;
-          newRotation.side1Z = 0;
-          newRotation.side2Z = 180;
-        }
+      // True if number even, false otherwise
+      const isEven = (n) => {
+        return n % 2 === 0;
+      };
+
+      // Determine if card faces are upside down
+      const isXEven = isEven(newRotation.x / 180);
+      const isYEven = isEven(newRotation.y / 180);
+      // const isBackYEven = isEven(newRotation.backY / 180);
+      // const isBackXEven = isEven(newRotation.backX / 180);
+      // let backSum = 0;
+      // const evenArray = [isXEven, isYEven, isBackXEven, isBackYEven];
+      // evenArray.forEach((item) => {
+      //   if (item) backSum += 2;
+      //   else backSum += 1;
+      // });
+      // const isTotalBackEven = isEven(backSum);
+      // console.log(backSum, isTotalBackEven);
+      // if (isTotalBackEven) newRotation.backZ = 0;
+      // else newRotation.backZ = 180;
+
+      // Correct z rotations if upside down
+      if (newRotation.isFront) {
+        if (isXEven && isYEven) newRotation.frontZ = 0;
+        else if (!isXEven && !isYEven) newRotation.frontZ = 180;
+        else newRotation.frontZ = 0;
       } else {
-        // Flip logic for either X or Y separately
-        if (newRotation.flipX) {
-          console.log('Flipping X');
-          if (newRotation.side1X === 0) {
-            newRotation.side1X = -180;
-            newRotation.side2X = -180;
-          } else {
-            newRotation.side1X = 0;
-            newRotation.side2X = 0;
-          }
-        }
-        if (newRotation.flipY) {
-          console.log('Flipping Y');
-          if (newRotation.side1Y === 0) {
-            newRotation.side1Y = -180;
-            newRotation.side2Y = 0;
-          } else {
-            newRotation.side1Y = 0;
-            newRotation.side2Y = 180;
-          }
-        }
-        // Flip Z if needed so card is facing right side up
-        console.log('visible side: ', newRotation.visibleSide);
-        if (newRotation.visibleSide === 1) {
-          if (newRotation.side2X === -180 && newRotation.side2Y === 180) {
-            newRotation.side2Z = 180;
-          } else {
-            newRotation.side2Z = 0;
-          }
-        } else if (newRotation.visibleSide === 2) {
-          if (newRotation.side1X === -180 && newRotation.side1Y === -180) {
-            newRotation.side1Z = 180;
-          } else {
-            newRotation.side1Z = 0;
-          }
-        }
+        if (!isXEven && isYEven) newRotation.backZ = 180;
+        else newRotation.backZ = 0;
       }
 
-      if (newRotation.visibleSide === 1) newRotation.visibleSide = 2;
-      else if (newRotation.visibleSide === 2) newRotation.visibleSide = 1;
-
-      console.log(newRotation);
       return newRotation;
     });
   };
@@ -220,30 +233,29 @@ export default function FlipCard({ newCard, flipTypes }) {
     return newIndex;
   };
 
+  const transParams = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`;
+  const backTransParams = `rotateX(${rotation.backX}deg) rotateY(${rotation.backY}deg) rotateZ(${rotation.backZ}deg)`;
+  const frontTransParams = `rotateZ(${rotation.frontZ}deg)`;
+
   return (
-    <motion.div className={classes.flipCardRoot}>
-      <motion.div
-        className={`${classes.cardFace} ${classes.side1}`}
-        custom={rotation}
-        variants={variants}
-        initial='side1Initial'
-        animate={
-          rotation.flipXAndY ? 'side1FlipTwoAxis' : 'side1FlipSingleAxis'
-        }
+    <div className={classes.flipBox}>
+      <div
+        className={`${classes.flipBoxInner}`}
+        style={{ transform: transParams }}
       >
-        {side1}
-      </motion.div>
-      <motion.div
-        className={classes.cardFace}
-        custom={rotation}
-        variants={variants}
-        initial='side2Initial'
-        animate={
-          rotation.flipXAndY ? 'side2FlipTwoAxis' : 'side2FlipSingleAxis'
-        }
-      >
-        {side2}
-      </motion.div>
-    </motion.div>
+        <div
+          className={`${classes.flipBoxCommon} ${classes.flipBoxFront}`}
+          style={{ transform: frontTransParams }}
+        >
+          {side1}
+        </div>
+        <div
+          className={`${classes.flipBoxCommon} ${classes.flipBoxBack} `}
+          style={{ transform: backTransParams }}
+        >
+          {side2}
+        </div>
+      </div>
+    </div>
   );
 }
