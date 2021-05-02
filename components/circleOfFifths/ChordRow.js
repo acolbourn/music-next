@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { getScale, getChordsOfScale } from './chordScaleHelpers';
 import CardRow from './CardRow';
 import Scale from './Scale';
-import FlipCard from './FlipCard';
+import FlipCard3d from './FlipCard3d';
 
 const useStyles = makeStyles((theme) => ({
   chordRowRoot: {
@@ -28,7 +28,7 @@ export default function ChordRow({ relatedKey, flipTypes }) {
   return (
     <div className={classes.chordRowRoot}>
       <div className={classes.scaleBox}>
-        <FlipCard newCard={newScale} flipTypes={['xDown']} />
+        <FlipCard3d newCard={newScale} flipTypes={['xDown']} />
       </div>
       <div className={classes.cardRowBox}>
         <CardRow

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { CARD_LABELS } from './chordScaleHelpers';
 import { getCardColors } from './circle/circleConstants';
-import FlipCard from './FlipCard';
+import FlipCard3d from './FlipCard3d';
 import ChordCard from './ChordCard';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,7 @@ export default function CardRow({ chords, keySig, relation, flipTypes }) {
 
   // Map new card faces onto flip card
   const chordRow = newCards.map((newCard, index) => (
-    <FlipCard newCard={newCard} key={index} flipTypes={flipTypes} />
+    <FlipCard3d newCard={newCard} key={index} flipTypes={flipTypes} />
   ));
 
   return <div className={classes.chordRow}>{chordRow}</div>;

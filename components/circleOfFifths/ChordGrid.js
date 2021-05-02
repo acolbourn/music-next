@@ -8,9 +8,12 @@ const useStyles = makeStyles({
   chordGridRoot: {
     width: '100%',
     height: '100%',
-    overflow: 'hidden',
     padding: '0 5px',
     // backgroundColor: 'blue',
+    // perspectiveOrigin: 'center center',
+    // perspective: '1000px',
+    // WebkitPerspective: '1000px',
+    overflow: 'hidden',
   },
 });
 
@@ -53,6 +56,8 @@ export default function ChordGrid() {
     'x180y360',
   ];
 
+  // const flipTypes = ['xDownExtraSpin2'];
+
   const relatedKeys = getRelatedKeys(scale);
 
   // Create Chord row for each scale
@@ -63,6 +68,16 @@ export default function ChordGrid() {
       flipTypes={flipTypes}
     />
   ));
+
+  // // Temporarily use less rows for testing - can delete
+  // const tempKeys = relatedKeys.slice(0, 1);
+  // const chordRows = tempKeys.map((relatedKey) => (
+  //   <ChordRow
+  //     relatedKey={relatedKey}
+  //     key={relatedKey.relation}
+  //     flipTypes={flipTypes}
+  //   />
+  // ));
 
   return <div className={classes.chordGridRoot}>{chordRows}</div>;
 }

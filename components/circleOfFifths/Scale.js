@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
   },
   title: {
-    fontSize: '1rem',
+    fontSize: '16px',
+    // fontSize: '1rem',
     margin: '3px 15px',
     [theme.breakpoints.down('xs')]: {
       fontSize: '0.8rem',

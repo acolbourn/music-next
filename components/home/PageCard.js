@@ -6,9 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import PageLinks from './PageLinks';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   pageCardRoot: {
-    minWidth: 275,
+    minWidth: 325,
   },
   cardBody: {
     display: 'flex',
@@ -18,10 +18,17 @@ const useStyles = makeStyles({
     marginBottom: 12,
   },
   scaleBox: {
-    border: '1px solid blue',
+    width: '150px',
+    backgroundColor: theme.colors.background.navBar,
+    padding: '10px',
+    margin: '5px',
     flex: 1,
   },
-});
+  cardTitle: {
+    color: 'white',
+    cursor: 'pointer',
+  },
+}));
 
 export default function HomePage() {
   const classes = useStyles();
@@ -29,9 +36,12 @@ export default function HomePage() {
   return (
     <Card className={classes.pageCardRoot}>
       <CardContent>
-        <Typography variant='h3' component='h1'>
-          <Link href='/circle-of-fifths'>Circle of Fifths</Link>
-        </Typography>
+        <Link href='/circle-of-fifths' passHref>
+          <Typography variant='h3' component='h1' className={classes.cardTitle}>
+            Circle of Fifths
+          </Typography>
+        </Link>
+
         <div className={classes.cardBody}>
           <Paper className={classes.scaleBox}>
             <Typography className={classes.scaleTitle} color='textSecondary'>

@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
   chordGridArea: {
     backgroundColor: theme.colors.background.primary,
     gridArea: 'chordGridArea',
+    overflowX: 'hidden',
   },
 }));
 

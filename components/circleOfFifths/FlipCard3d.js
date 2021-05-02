@@ -2,88 +2,105 @@ import { useState, useRef, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { ANIMATION_TIME, getRandomInt } from './circle/circleConstants';
 
-/**
- * Generates individual randomized animation times centered around a global animation time.
- * @param {number} globalAnimationTime Global animation time for entire page.
- * @param {number} maxVariance Maximum amount of random variation to add or subtract in seconds.
- * @returns {number} Individual randomized animation time.
- */
-function getAnimationTime(globalAnimationTime, maxVariance) {
-  const randomTime = maxVariance * Math.random();
-  const randomSign = Math.random() >= 0.5 ? 1 : -1;
-  const animationTime = globalAnimationTime + randomSign * randomTime;
-  return animationTime;
-}
-
-// const animationTime = getAnimationTime(ANIMATION_TIME, 2);
-// console.log(animationTime);
-
 const useStyles = makeStyles((theme) => ({
-  flipBox: {
-    backgroundColor: 'transparent',
+  // flipBox: {
+  //   backgroundColor: 'transparent',
+  //   width: '100%',
+  //   height: '100%',
+  //   borderRadius: theme.misc.borderRadius,
+  //   /*reduces flicker glitch by forcing hardware acceleration on the GPU*/
+  //   WebkitTransform: 'translate3d(0,0,0)',
+  // },
+  // flipBoxInner: {
+  //   position: 'relative',
+  //   width: '100%',
+  //   height: '100%',
+  //   transition: `${ANIMATION_TIME}s`,
+  //   transitionTimingFunction: 'ease-in-out',
+  //   transformStyle: 'preserve-3d',
+  // },
+  // flipBoxCommon: {
+  //   borderRadius: theme.misc.borderRadius,
+  //   position: 'absolute',
+  //   width: '100%',
+  //   height: '100%',
+  //   WebkitBackfaceVisibility: 'hidden' /* Safari */,
+  //   backfaceVisibility: 'hidden',
+  // },
+  flipCard: {
+    WebkitTransformStyle: 'preserve-3d',
+    transformStyle: 'preserve-3d',
+    WebkitPerspective: 1000,
+    perspective: 1000,
     width: '100%',
     height: '100%',
-    borderRadius: theme.misc.borderRadius,
-    /*reduces flicker glitch by forcing hardware acceleration on the GPU*/
-    WebkitTransform: 'translate3d(0,0,0)',
-
-    // perspective: '400px',
-    // WebkitPerspective: '400px',
-    // WebkitBackfaceVisibility: 'hidden',
-    // WebkitTransform: 'translateZ(0) scale(1, 1)',
-
-    // WebkitFontSmoothing: 'subpixel-antialiased',
-
-    // boxShadow: `
-    //   inset 0 0 50px #fff,
-    //   inset 20px 0 80px #f0f,
-    //   inset -20px 0 80px #0ff,
-    //   inset 20px 0 300px #f0f,
-    //   inset -20px 0 300px #0ff,
-    //   0 0 50px #fff,
-    //   -10px 0 80px #f0f,
-    //   10px 0 80px #0ff
-    // `,
-    // Create glowing background behind neighboring elements
-    // '&:before': {
-    //   content: '""',
-    //   position: 'absolute',
-    //   top: 0,
-    //   bottom: 0,
-    //   left: 0,
-    //   right: 0,
-    //   zIndex: -1,
-    //   boxShadow: '0px 0px 15px 5px #FFFFFF',
-    //   // boxShadow: '0 10px 35px  #FFFFFF,0 2px 15px  #FFFFFF',
-    //   // boxShadow: '0 10px 35px rgba(50,50,93,.1),0 2px 15px rgba(0,0,0,.07)',
+    // '&:hover $flipCardBack': {
+    //   WebkitTransform: 'rotateY(0)',
+    //   transform: 'rotateY(0)',
+    // },
+    // '&:hover $flipCardFront': {
+    //   WebkitTransform: 'rotateY(-180deg)',
+    //   transform: 'rotateY(-180deg)',
     // },
   },
-  flipBoxInner: {
+
+  flipCardInner: {
     position: 'relative',
-    // width: '75px',
     width: '100%',
     height: '100%',
-    transition: `${ANIMATION_TIME}s`,
-    // transition: `transform ${ANIMATION_TIME + 2 * Math.random()}s`,
-    transitionTimingFunction: 'ease-in-out',
+    // transition: `${ANIMATION_TIME}s`,
+    // transitionTimingFunction: 'ease-in-out',
+    transformStyle: 'preserve-3d',
+    WebkitTransition: `-webkit-transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    transition: `-webkit-transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    OTransition: `transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    transition: `transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    transition: `transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1),       WebkitTransform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+  },
+
+  flipCardCommon: {
+    backgroundColor: theme.colors.secondary,
+    WebkitBackfaceVisibility: 'hidden',
+    backfaceVisibility: 'hidden',
+    width: '100%',
+    height: '100%',
+    borderRadius: 6,
+    color: '#fff',
+    fontSize: '12px',
+  },
+
+  flipCardBack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    // WebkitTransform: 'rotateY(180deg)',
+    // transform: 'rotateY(180deg)',
+    WebkitTransformStyle: 'preserve-3d',
     transformStyle: 'preserve-3d',
   },
-  flipBoxCommon: {
-    // A CSS rounding error causes 1px gaps at various screen sizes so an outline is used to fill in the gaps
-    // outline: `1px solid ${theme.colors.secondary}`,
-    // boxShadow: `0px 0px 0px 1px dodgerBlue`,
-    // boxShadow: `0px 0px 0px 1px ${theme.colors.secondary}`,
-    // backgroundColor: theme.colors.secondary,
-    borderRadius: theme.misc.borderRadius,
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    WebkitBackfaceVisibility: 'hidden' /* Safari */,
-    backfaceVisibility: 'hidden',
 
-    '&:hover': {
-      boxShadow: '0px 0px 15px 5px #FFFFFF',
-    },
+  flipCardFront: {
+    // WebkitTransform: 'rotateY(0)',
+    // transform: 'rotateY(0)',
+    WebkitTransformStyle: 'preserve-3d',
+    transformStyle: 'preserve-3d',
+  },
+
+  flipCardContent: {
+    WebkitTransform: 'translateY(-50%) translateZ(10px)',
+    transform: 'translateY(-50%) translateZ(10px)',
+    // WebkitTransform: 'translateY(-50%) translateZ(60px) scale(0.94)',
+    // transform: 'translateY(-50%) translateZ(60px) scale(0.94)',
+    top: '50%',
+    position: 'absolute',
+    left: 0,
+    width: '100%',
+    WebkitBoxSizing: 'border-box',
+    boxSizing: 'border-box',
+    outline: '1px solid transparent',
+    WebkitPerspective: 'inherit',
+    perspective: 'inherit',
+    zIndex: 2,
   },
 }));
 
@@ -130,11 +147,11 @@ export default function FlipCard({ newCard, flipTypes }) {
   let side1;
   let side2;
   if (rotation.isFront) {
-    side1 = cardQueue[1];
-    side2 = cardQueue[0];
-  } else {
     side1 = cardQueue[0];
     side2 = cardQueue[1];
+  } else {
+    side1 = cardQueue[1];
+    side2 = cardQueue[0];
   }
 
   const handleFlip = () => {
@@ -229,12 +246,44 @@ export default function FlipCard({ newCard, flipTypes }) {
     return newIndex;
   };
 
-  const transParams = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`;
+  const transformParams = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`;
   const backTransParams = `rotateX(${rotation.backX}deg) rotateY(${rotation.backY}deg) rotateZ(${rotation.backZ}deg)`;
   const frontTransParams = `rotateZ(${rotation.frontZ}deg)`;
+  const transformStyles = {
+    transform: transformParams,
+    WebkitTransform: transformParams,
+  };
+  const backTransformStyles = {
+    transform: backTransParams,
+    WebkitTransform: backTransParams,
+  };
+  const frontTransformStyles = {
+    transform: frontTransParams,
+    WebkitTransform: frontTransParams,
+  };
 
   return (
-    <div className={classes.flipBox}>
+    <div className={classes.flipCard}>
+      <div className={classes.flipCardInner} style={transformStyles}>
+        <div
+          className={`${classes.flipCardCommon} ${classes.flipCardFront}`}
+          style={backTransformStyles}
+        >
+          <div className={classes.flipCardContent}>{side1}</div>
+        </div>
+        <div
+          className={`${classes.flipCardCommon} ${classes.flipCardBack}`}
+          style={frontTransformStyles}
+        >
+          <div className={classes.flipCardContent}>{side2}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+{
+  /* <div className={classes.flipBox}>
       <div
         className={`${classes.flipBoxInner}`}
         style={{ transform: transParams }}
@@ -252,6 +301,5 @@ export default function FlipCard({ newCard, flipTypes }) {
           {side2}
         </div>
       </div>
-    </div>
-  );
+    </div> */
 }
