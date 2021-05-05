@@ -34,6 +34,7 @@ export default function Ring({
   const { radius, colors, ringWidth, labels, ringName } = ringParams;
   console.log(`${ringName} rendered`);
   let currentRotation = 0;
+  const animationCurve = [0.4, 0.2, 0.2, 1];
   if (rotation.hasOwnProperty(ringName)) currentRotation = rotation[ringName];
 
   // Slice dimensions
@@ -90,7 +91,7 @@ export default function Ring({
           animate={{
             rotate: initRotation - currentRotation + rotationOffset,
           }}
-          transition={{ duration: ANIMATION_TIME }}
+          transition={{ duration: ANIMATION_TIME, ease: animationCurve }}
           className={
             ringName === 'sharpsAndFlats'
               ? classes.sharpsFlatslabel
@@ -129,7 +130,7 @@ export default function Ring({
           originY: `${globalRadius}px`,
         }}
         animate={{ rotate: currentRotation + rotationOffset }}
-        transition={{ duration: ANIMATION_TIME }}
+        transition={{ duration: ANIMATION_TIME, ease: animationCurve }}
       >
         {textLabels}
       </motion.g>
@@ -142,7 +143,7 @@ export default function Ring({
           originY: `${globalRadius}px`,
         }}
         animate={{ rotate: currentRotation + rotationOffset }}
-        transition={{ duration: ANIMATION_TIME }}
+        transition={{ duration: ANIMATION_TIME, ease: animationCurve }}
       >
         {slices}
         {textLabels}

@@ -56,7 +56,7 @@ export default function ChordGrid() {
     'x180y360',
   ];
 
-  // const flipTypes = ['xDownExtraSpin2'];
+  // const flipTypes = ['x180y360'];
 
   const relatedKeys = getRelatedKeys(scale);
 

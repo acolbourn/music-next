@@ -36,14 +36,19 @@ export default function CardRow({ chords, keySig, relation, flipTypes }) {
       <ChordCard
         chord={chord.symbol}
         label={labels[index]}
-        color={colors === null ? 'standard' : colors[index]}
+        // color={colors === null ? 'standard' : colors[index]}
       />
     ));
   }, [chords, classes.cardContent]);
 
   // Map new card faces onto flip card
   const chordRow = newCards.map((newCard, index) => (
-    <FlipCard3d newCard={newCard} key={index} flipTypes={flipTypes} />
+    <FlipCard3d
+      newCard={newCard}
+      key={index}
+      flipTypes={flipTypes}
+      backColor={colors === null ? 'standard' : colors[index]}
+    />
   ));
 
   return <div className={classes.chordRow}>{chordRow}</div>;

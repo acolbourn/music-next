@@ -4,7 +4,8 @@ import { replaceFlatsSharps } from './circle/circleConstants';
 
 const useStyles = makeStyles((theme) => ({
   chordCardRoot: ({ color }) => ({
-    backgroundColor: color === 'standard' ? theme.colors.secondary : color,
+    // backgroundColor: color === 'standard' ? theme.colors.secondary : color,
+    backgroundColor: 'transparent',
     width: '100%',
     height: '100%',
     borderRadius: theme.misc.borderRadius,

@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { getScale, getChordsOfScale } from './chordScaleHelpers';
 import CardRow from './CardRow';
 import Scale from './Scale';
@@ -11,11 +11,16 @@ const useStyles = makeStyles((theme) => ({
   scaleBox: {
     width: '100%',
     height: '40px',
+    margin: `${theme.misc.gridSpacing} 0`,
+    [theme.breakpoints.down('xs')]: {
+      margin: `${theme.misc.gridSpacingMobile} 0`,
+    },
   },
 }));
 
 export default function ChordRow({ relatedKey, flipTypes }) {
   const classes = useStyles();
+  const theme = useTheme();
 
   const { keySig, relation } = relatedKey;
 
@@ -28,7 +33,11 @@ export default function ChordRow({ relatedKey, flipTypes }) {
   return (
     <div className={classes.chordRowRoot}>
       <div className={classes.scaleBox}>
-        <FlipCard3d newCard={newScale} flipTypes={['xDown']} />
+        <FlipCard3d
+          newCard={newScale}
+          flipTypes={['xDown']}
+          backColor={theme.colors.secondary}
+        />
       </div>
       <div className={classes.cardRowBox}>
         <CardRow

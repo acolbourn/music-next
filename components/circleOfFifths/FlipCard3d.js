@@ -1,32 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { ANIMATION_TIME, getRandomInt } from './circle/circleConstants';
+import { CSSTransition } from 'react-transition-group';
 
 const useStyles = makeStyles((theme) => ({
-  // flipBox: {
-  //   backgroundColor: 'transparent',
-  //   width: '100%',
-  //   height: '100%',
-  //   borderRadius: theme.misc.borderRadius,
-  //   /*reduces flicker glitch by forcing hardware acceleration on the GPU*/
-  //   WebkitTransform: 'translate3d(0,0,0)',
-  // },
-  // flipBoxInner: {
-  //   position: 'relative',
-  //   width: '100%',
-  //   height: '100%',
-  //   transition: `${ANIMATION_TIME}s`,
-  //   transitionTimingFunction: 'ease-in-out',
-  //   transformStyle: 'preserve-3d',
-  // },
-  // flipBoxCommon: {
-  //   borderRadius: theme.misc.borderRadius,
-  //   position: 'absolute',
-  //   width: '100%',
-  //   height: '100%',
-  //   WebkitBackfaceVisibility: 'hidden' /* Safari */,
-  //   backfaceVisibility: 'hidden',
-  // },
   flipCard: {
     WebkitTransformStyle: 'preserve-3d',
     transformStyle: 'preserve-3d',
@@ -34,22 +11,29 @@ const useStyles = makeStyles((theme) => ({
     perspective: 1000,
     width: '100%',
     height: '100%',
-    // '&:hover $flipCardBack': {
-    //   WebkitTransform: 'rotateY(0)',
-    //   transform: 'rotateY(0)',
-    // },
-    // '&:hover $flipCardFront': {
-    //   WebkitTransform: 'rotateY(-180deg)',
-    //   transform: 'rotateY(-180deg)',
-    // },
+
+    '& .fadeInOut-enter': {
+      opacity: 0,
+    },
+    '& .fadeInOut-enter-active': {
+      opacity: 1,
+      transition: 'opacity 3000ms',
+    },
+    '& .fadeInOut-exit': {
+      opacity: 1,
+    },
+    '& .fadeInOut-exit-active': {
+      opacity: 0,
+      transition: 'opacity 3000ms',
+    },
   },
+
+  test: { opacity: 0 },
 
   flipCardInner: {
     position: 'relative',
     width: '100%',
     height: '100%',
-    // transition: `${ANIMATION_TIME}s`,
-    // transitionTimingFunction: 'ease-in-out',
     transformStyle: 'preserve-3d',
     WebkitTransition: `-webkit-transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
     transition: `-webkit-transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
@@ -58,8 +42,18 @@ const useStyles = makeStyles((theme) => ({
     transition: `transform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1),       WebkitTransform ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
   },
 
-  flipCardCommon: {
-    backgroundColor: theme.colors.secondary,
+  flipCardCommon: ({ backColor }) => ({
+    background: 'rgba(100,100,0,1)',
+    WebkitTransition: `background ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    MozTransition: `background ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    OTransition: `background ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    transition: `background ${ANIMATION_TIME}s cubic-bezier(0.4, 0.2, 0.2, 1)`,
+    '&:hover': {
+      background: 'rgba(100,100,0,0.3)',
+    },
+    backgroundColor:
+      backColor === 'standard' ? theme.colors.secondary : backColor,
+
     WebkitBackfaceVisibility: 'hidden',
     backfaceVisibility: 'hidden',
     width: '100%',
@@ -67,46 +61,44 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 6,
     color: '#fff',
     fontSize: '12px',
+    WebkitBoxSizing: 'border-box',
+    boxSizing: 'border-box',
+    // fix jagged edges in firefox by faking anti-aliasing
+    outline: '1px solid transparent',
+  }),
+
+  fadeInOut: {
+    // background: 'rgba(100,100,0,0.4) !important',
   },
 
   flipCardBack: {
     position: 'absolute',
     top: 0,
     left: 0,
-    // WebkitTransform: 'rotateY(180deg)',
-    // transform: 'rotateY(180deg)',
     WebkitTransformStyle: 'preserve-3d',
     transformStyle: 'preserve-3d',
   },
 
   flipCardFront: {
-    // WebkitTransform: 'rotateY(0)',
-    // transform: 'rotateY(0)',
     WebkitTransformStyle: 'preserve-3d',
     transformStyle: 'preserve-3d',
   },
 
   flipCardContent: {
-    WebkitTransform: 'translateY(-50%) translateZ(10px)',
-    transform: 'translateY(-50%) translateZ(10px)',
-    // WebkitTransform: 'translateY(-50%) translateZ(60px) scale(0.94)',
-    // transform: 'translateY(-50%) translateZ(60px) scale(0.94)',
+    WebkitTransform: 'translateY(-50%) translateZ(15px)',
+    transform: 'translateY(-50%) translateZ(15px)',
     top: '50%',
     position: 'absolute',
     left: 0,
     width: '100%',
-    WebkitBoxSizing: 'border-box',
-    boxSizing: 'border-box',
-    outline: '1px solid transparent',
     WebkitPerspective: 'inherit',
     perspective: 'inherit',
     zIndex: 2,
   },
 }));
 
-export default function FlipCard({ newCard, flipTypes }) {
-  const classes = useStyles();
-  // const [flip, setFlip] = useState(false);
+export default function FlipCard({ newCard, flipTypes, backColor }) {
+  const classes = useStyles({ backColor });
   const [rotation, setRotation] = useState({
     x: 0,
     y: 0,
@@ -118,6 +110,7 @@ export default function FlipCard({ newCard, flipTypes }) {
     isFront: true,
     flipTypeIndex: 0,
   });
+  const [triggerFade, setTriggerFade] = useState(false);
 
   const isFirstRun = useRef(true);
 
@@ -155,7 +148,9 @@ export default function FlipCard({ newCard, flipTypes }) {
   }
 
   const handleFlip = () => {
-    // setFlip((prev) => !prev);
+    // setTriggerFade(true);
+    // setTimeout(() => setTriggerFade(false), 1500);
+
     setRotation((prev) => {
       let newRotation = { ...prev };
       newRotation.isFront = !newRotation.isFront;
@@ -262,44 +257,34 @@ export default function FlipCard({ newCard, flipTypes }) {
     WebkitTransform: frontTransParams,
   };
 
+  const cardCommonClasses = `${classes.flipCardCommon} ${
+    triggerFade ? classes.fadeInOut : ''
+  }`;
+
   return (
     <div className={classes.flipCard}>
       <div className={classes.flipCardInner} style={transformStyles}>
         <div
-          className={`${classes.flipCardCommon} ${classes.flipCardFront}`}
+          className={`${cardCommonClasses} ${classes.flipCardFront}`}
           style={backTransformStyles}
         >
           <div className={classes.flipCardContent}>{side1}</div>
         </div>
         <div
-          className={`${classes.flipCardCommon} ${classes.flipCardBack}`}
+          className={`${cardCommonClasses} ${classes.flipCardBack}`}
           style={frontTransformStyles}
         >
           <div className={classes.flipCardContent}>{side2}</div>
         </div>
       </div>
+      {/* <CSSTransition
+        in={triggerFade}
+        timeout={(ANIMATION_TIME * 1000) / 2}
+        classNames='fadeInOut'
+        onEntered={() => setTriggerFade(false)}
+      >
+        <div className={classes.test}>Test</div>
+      </CSSTransition> */}
     </div>
   );
-}
-
-{
-  /* <div className={classes.flipBox}>
-      <div
-        className={`${classes.flipBoxInner}`}
-        style={{ transform: transParams }}
-      >
-        <div
-          className={`${classes.flipBoxCommon}`}
-          style={{ transform: frontTransParams }}
-        >
-          {side1}
-        </div>
-        <div
-          className={`${classes.flipBoxCommon}`}
-          style={{ transform: backTransParams }}
-        >
-          {side2}
-        </div>
-      </div>
-    </div> */
 }
